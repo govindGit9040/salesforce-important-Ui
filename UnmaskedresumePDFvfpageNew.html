@@ -1,0 +1,155 @@
+<apex:page renderAs="pdf" applyBodyTag="false" controller="UnmaskedResumePDF" action="{!init}">
+
+
+    <head>
+        <style type="text/css" media="print">
+            @page {
+                margin-top: 140px;
+            }
+            
+            @page {
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            
+            div.header {
+                padding: 10px;
+                position: running(header);
+                padding-top: -20px;
+            }
+            
+            div.footer {
+                display: block;
+                padding: 10px;
+                position: running(footer);
+            }
+            
+            .pagenumber:before {
+                content: counter(page);
+            }
+            
+            .pagecount:before {
+                content: counter(pages);
+            }
+        </style>
+    </head>
+    <div class="header">
+        <p align="Right"> <img src="{!$Resource.techilalogo}" width="25%" style="opacity: 0.5;" /></p>
+
+    </div>
+    <!-- <div class="footer">
+        <div>Page <span class="pagenumber" /> of <span class="pagecount" /></div>
+    </div> -->
+    <div class="content">
+        <apex:pageBlock>
+            <apex:pageBlockTable value="{!datawrapper}" var="dw">
+
+                <apex:repeat value="{!datawrapper.Candidatelst}" rendered="{!datawrapper.Candidatelst!= NULL}" var="candidate">
+                    <apex:column>
+                        <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                            <apex:outputText value="{!candidate.Name}" style="color:Red; font-size: 20px;  font-weight: bolder; padding-bottom: 5px;" />
+                        </p>
+                        <p style="font-family: sans-serif;margin:0; padding:0;line-height: 22px; font-size:14px;">
+                            <span>Email : - </span>
+                            <apex:outputText value="{!candidate.Email__c}" />
+                        </p>
+                        <p style="font-family: sans-serif;margin:0; padding:0;line-height: 22px; font-size:14px;">
+                            <span>Contact No : - </span>
+                            <apex:outputText value="{!candidate.Phone__c}" />
+                        </p>
+
+                        <apex:outputPanel rendered="{!(candidate.Address__c!=null)}" title="Address" style="color:Red; font-size:20px;">
+                            <div>
+                                <h1 style="color:Red; font-size:20px; font-family: sans-serif; margin-top:30px;">Address :-</h1>
+                                <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                                    <apex:outputText value="{!candidate.Address__c}" />
+                                </p>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!(candidate.Professional_Summary__c!=null)}" title="Professional summary">
+                            <div>
+                                <h1 style="color:Red; font-size:20px;font-family: sans-serif; margin-top:30px;">Professional summary :- </h1>
+                                <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                                    <apex:outputText value="{!candidate.Professional_Summary__c}" />
+                                </p>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!(candidate.Skills__c!=null)}" title="Skills" style="color:Red; font-size:20px; vertical-align:top">
+                            <h1 style="color:Red; font-size:20px;font-family: sans-serif; margin-top:30px;">Skills :- </h1>
+                            <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                                <apex:outputText value="{!candidate.Skills__c}" />
+                            </p>
+                        </apex:outputPanel>
+                    </apex:column>
+
+                </apex:repeat>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+
+        <apex:pageBlock>
+            <apex:pageBlockTable value="{!datawrapper}" var="dw">
+
+                <apex:column>
+                    <apex:outputPanel rendered="{!(datawrapper.Certificationlst.size>0)}" title="Certifications " style="color:Red; font-size:20px; text-align:left">
+                        <div>
+                            <h1 style="color:Red; font-size:20px; text-align: left;font-family: sans-serif; margin-top:30px;"> Certifications :- </h1>
+                            <apex:repeat value="{!datawrapper.Certificationlst}" var="cert">
+                                <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                                    <apex:outputText value="{!cert.Certificate_Name__c}" style="text-align: right;  " />
+                                </p>
+
+                            </apex:repeat>
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!(datawrapper.Educationhistorylst.size>0)}" title="Education " style="color:Red; font-size:20px;">
+                        <div style=" margin-top:30px">
+                            <h1 style="color:Red; font-size:20px;font-family: sans-serif; margin-top:30px;"> Education :- </h1>
+                            <apex:repeat value="{!datawrapper.Educationhistorylst}" var="Education">
+                                <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                                    {!Education.Major__c} {!Education.Grade__c} {!Education.Institute__c} {!Education.Start_Year__c} {!Education.End_Year__c}
+                                </p>
+
+                            </apex:repeat>
+                        </div>
+                    </apex:outputPanel>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        <apex:outputPanel rendered="{!(datawrapper.Employmenthistorylst.size>0)}" title="Employment History " style="color:Red; font-size:20px;">
+            <div>
+                <h1 style="color:Red; font-size:20px;font-family: sans-serif; margin-top:30px;"> Employment History :- </h1>
+
+                <apex:repeat value="{!datawrapper.Employmenthistorylst}" var="Employment">
+
+                    <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                        <u style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; text-decoration: none; font-size:15px; font-weight:600;  margin-bottom:5px; display:inline-block;">
+                            <ol style="text-decoration: none;">&#187; {!Employment.Name}</ol>
+                        </u> </p>
+                    <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                        {!Employment.Start_Date__c} </p>
+                    <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                        {!Employment.End_Year__c} </p>
+                    <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+
+                        <apex:outputPanel rendered="{!(Employment.Title_Role__c!=null)}" title="Professional summary" style="color:Red; font-size:20px;">
+                            <div style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px;">
+                                <span>Role :- </span>
+                                <apex:outputText value="{!Employment.Title_Role__c}" />
+                            </div>
+                        </apex:outputPanel>
+                    </p>
+                    <p style="font-family: sans-serif; margin:0; padding:0; line-height: 22px; font-size:14px; margin-bottom:20px;">
+
+                        <apex:outputText value="{!HTMLENCODE(Employment.Description__c)}" style="white-space:pre-line;" escape="false" />
+                    </p>
+                </apex:repeat>
+            </div>
+        </apex:outputPanel>
+    </div>
+
+
+</apex:page>
