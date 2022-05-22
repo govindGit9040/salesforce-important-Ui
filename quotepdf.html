@@ -1,0 +1,1573 @@
+<apex:page renderAs="pdf" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+
+    <head>
+        <style>
+            @page {
+                size: 11in 8.5in;
+                margin: 0.3in 0.55in 0.7in;
+                /* PDF width, height, margin */
+            }
+            
+            body {
+                font-size: 9px;
+                font-family: Arial, sans-serif;
+            }
+            
+            @page {
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            
+            div.footer {
+                display: block;
+                padding: 10px;
+                font-size: 6px;
+                position: running(footer);
+            }
+            
+            div.footer_block {
+                display: inline-block;
+                width: 100%;
+                color: #000;
+                font-weight: 600;
+            }
+            
+            div.left_footer_block {
+                width: 50%;
+                text-align: left;
+                float: left;
+            }
+            
+            div.right_footer_block {
+                width: 50%;
+                text-align: right;
+                float: left;
+            }
+            
+            .pagenumber:before {
+                content: counter(page);
+            }
+            
+            .pagecount:before {
+                content: counter(pages);
+            }
+            
+            div.logo_W_head {
+                display: inline-block;
+                width: 100%;
+            }
+            
+            div.main_head_txt {
+                width: 77%;
+                float: left;
+            }
+            
+            div.main_head_logo {
+                width: 23%;
+                float: left;
+            }
+            
+            div.h1 {
+                font-size: 19px;
+                color: rgb(74, 74, 160);
+                font-weight: 600;
+            }
+            
+            .logo_img {
+                margin-bottom: 4px;
+            }
+            
+            p.subh1 {
+                font-size: 10px;
+                margin-top: 15px;
+                color: rgb(74, 74, 160);
+                font-weight: 600;
+            }
+            
+            div.logo_text {
+                font-size: 8px;
+                color: rgb(30, 30, 65);
+                font-weight: 600;
+            }
+            
+            table.fullwidth_table {
+                width: 99.5%;
+                border-collapse: collapse;
+                border: 0;
+                margin-top: 10px;
+            }
+            
+            tr.table_header {
+                background-color: #000;
+                border-collapse: collapse;
+                border: 0;
+            }
+            
+            td.thead_txt {
+                width: 62%;
+                padding: 6px 5px;
+                color: #fff;
+                border-collapse: collapse;
+                border: 0;
+                font-weight: 600;
+            }
+            
+            td.thead_txt1 {
+                width: 38%;
+                padding: 3px 8px;
+                color: #fff;
+                border-collapse: collapse;
+                font-weight: 600;
+                border: 0;
+            }
+            
+            td.table__txt {
+                width: 100%;
+                padding: 3px 5px;
+                color: #fff;
+                border-collapse: collapse;
+                font-weight: 600;
+                border: 0;
+            }
+            
+            div.table_flexone {
+                display: inline-block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            table.fullwidth_table62 {
+                width: 62%;
+                border-collapse: collapse;
+                border: 0;
+                margin-top: 5px;
+                float: left;
+            }
+            
+            table.fullwidth_table38 {
+                width: 38%;
+                border-collapse: collapse;
+                border: 0;
+                margin-top: 5px;
+                float: left;
+            }
+            
+            td.fullwidth_table62_lab,
+            td.fullwidth_table62_inp,
+            td.fullwidth_table38_inp,
+            td.fullwidth_table38_lab {
+                padding: 2px 5px;
+                color: #000;
+                border-collapse: collapse;
+                border: 0;
+                font-size: 8px;
+                min-height: 11px;
+            }
+            
+            td.fullwidth_table62_lab {
+                width: 190px;
+            }
+            
+            td.fullwidth_table38_lab {
+                width: 55px;
+            }
+            
+            div.fullwidth_table62_inp {
+                width: 280px;
+                border: 0.5px solid #000;
+                padding: 4.5px 3px;
+                min-height: 11px;
+            }
+            
+            div.fullwidth_table38_inp {
+                width: 300px;
+                min-height: 11px;
+            }
+            
+            div.fullwidth_table38_inp {
+                width: 280px;
+                border: 0.5px solid #000;
+                padding: 4.5px 3px;
+                min-height: 11px;
+            }
+            
+            label.fullwidth_table62_lab,
+            label.fullwidth_table38_lab {
+                font-weight: 600;
+            }
+            
+            div.fullwidth_table62_inp.blue,
+            div.fullwidth_table38_inp.blue {
+                background-color: #dce6f0;
+            }
+            
+            div.fullwidth_table62_inp.red,
+            div.fullwidth_table38_inp.red {
+                background-color: #f1dcdb;
+                color: #de0a0a;
+            }
+            
+            div.fullwidth_tableSm_inp {
+                width: 200px;
+                border: 0.5px solid #000;
+                padding: 4.5px 3px;
+                min-height: 11px;
+            }
+            
+            td.fullwidth_table62_inp.flex {
+                display: inline-block;
+                align-items: center;
+            }
+            
+            td.fullwidth_table62_inp.flex .fullwidth_tableSm_inp {
+                float: left;
+            }
+            
+            td.fullwidth_table62_inp .months {
+                float: left;
+                padding: 5px;
+            }
+            
+            div.fullwidth_tableSm_inp.red {
+                background-color: #f1dcdb;
+                color: #de0a0a;
+            }
+            
+            div.fullwidth_tableSm_inp.blue {
+                background-color: #dce6f0;
+                color: #000;
+            }
+            
+            .notice {
+                font-size: 8px;
+                line-height: 20px;
+            }
+            
+            div.fullwidth_tableXl_inp {
+                width: 350px;
+                border: 0.5px solid #000;
+                padding: 4.5px 3px;
+                min-height: 11px;
+            }
+            
+            div.fullwidth_tableXl_inp.blue {
+                background-color: #dce6f0;
+                color: #000;
+            }
+            
+            div.fullwidth_tableXl_inp.red {
+                background-color: #f1dcdb;
+                color: #de0a0a;
+            }
+            
+            tr.table_header.f2_bg {
+                background-color: #f2f2f2;
+            }
+            
+            td.thead_f2_bg {
+                color: #000;
+                border: 0.5px solid #000;
+                padding: 6px 5px;
+                font-weight: 600;
+            }
+            
+            td.fullwidth_table38_lab.xl {
+                width: 140px;
+            }
+            
+            table.colocation_table {
+                display: inline-block;
+                width: 99.5%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+            
+            th.colocation_table_first {
+                text-align: center;
+                font-size: 8px;
+                padding: 8px 5px;
+                line-height: 12px;
+                border-collapse: collapse;
+                border: 0.5px solid #000;
+            }
+            
+            td.colocation_table_first {
+                border-collapse: collapse;
+                border: 0.5px solid #000;
+                padding: 4.5px 5px;
+                min-height: 11px;
+                text-align: center;
+            }
+            
+            th.colocation_table_first.td1 {
+                width: 30px;
+                font-size: 7px;
+                font-weight: 600;
+            }
+            
+            td.colocation_table_first.td2,
+            td.colocation_table_first.td3,
+            td.colocation_table_first.td4,
+            td.colocation_table_first.td5,
+            td.colocation_table_first.td6,
+            td.colocation_table_first.td7,
+            td.colocation_table_first.td8,
+            td.colocation_table_first.td9,
+            td.colocation_table_first.td10 {
+                background-color: #dce6f0;
+            }
+            
+            th.colocation_table_first.bg_bf {
+                background-color: #bfbfbf;
+            }
+            
+            th.colocation_table_first.td2 {
+                width: 200px;
+            }
+            
+            th.colocation_table_first.td3 {
+                width: 90px;
+            }
+            
+            th.colocation_table_first.td4 {
+                width: 70px;
+            }
+            
+            th.colocation_table_first.td5 {
+                width: 90px;
+            }
+            
+            th.colocation_table_first.td6 {
+                width: 60px;
+            }
+            
+            th.colocation_table_first.td7 {
+                width: 65px;
+            }
+            
+            td.colocation_table_first.no_border {
+                border: 0;
+                background-color: #fff;
+            }
+            
+            td.colocation_table_first.txt_r_aln {
+                text-align: right;
+                font-weight: 600;
+            }
+            
+            table.colocation_table2nd {
+                margin-top: 10px;
+            }
+            
+            .colocation_table2nd th.colocation_table_first.td2 {
+                width: 130px;
+            }
+            
+            .colocation_table2nd th.colocation_table_first.td3 {
+                width: 60px;
+            }
+            
+            .colocation_table2nd th.colocation_table_first.td4 {
+                width: 90px;
+            }
+            
+            .colocation_table2nd th.colocation_table_first.td5 {
+                width: 70px;
+            }
+            
+            .colocation_table2nd th.colocation_table_first.td6 {
+                width: 90px;
+            }
+            
+            .colocation_table2nd th.colocation_table_first.td7 {
+                width: 60px;
+            }
+            
+            .colocation_table2nd th.colocation_table_first.td8 {
+                width: 65px;
+            }
+            
+            .colocation_table3rd th.colocation_table_first {
+                width: auto;
+            }
+            
+            .colocation_table3rd th.colocation_table_first.td2 {
+                width: 550px;
+            }
+            
+            .colocation_table3rd th.colocation_table_first.td3 {
+                width: 60px;
+            }
+            
+            div.table_head_inp {
+                display: inline-block;
+                width: 100%;
+                font-size: 8px;
+                margin-bottom: 0;
+            }
+            
+            div.full_w_table_lab {
+                font-weight: 600;
+                padding: 2px 5px;
+                color: #000;
+                font-size: 8px;
+                min-height: 11px;
+                width: 190px;
+                float: left;
+                margin-right: 5px;
+            }
+            
+            div.table_W_head {
+                float: left;
+            }
+            
+            div.full_w_table_inp {
+                width: 580px;
+                min-height: 140px;
+                border: 0.5px solid #000;
+                background-color: #f1dcdb;
+                float: left;
+                vertical-align: top;
+                padding: 5px;
+            }
+            
+            div.table_th {
+                border: 0.5px solid #000;
+                font-weight: 600;
+                vertical-align: top;
+                padding: 8px 5px;
+                text-align: center;
+                float: left;
+                width: 100px;
+                min-height: 19px;
+            }
+            
+            div.table_th2 {
+                min-height: 19px;
+                float: left;
+            }
+            
+            td.fullwidth_table62_lab.w_100,
+            div.full_w_table_lab.w_100 {
+                width: 100px;
+            }
+            
+            div.currency_total {
+                font-size: 8px;
+                margin-left: 627px;
+                width: 300px;
+                display: inline-block;
+                margin-bottom: 3px;
+            }
+            
+            .currency_total .label {
+                width: 70px;
+                font-weight: 600;
+                padding: 5px 5px;
+                float: left;
+                text-align: right;
+            }
+            
+            .currency_total .value {
+                width: 100px;
+                border: 0.5px solid #000;
+                padding: 4.5px 3px;
+                float: left;
+                min-height: 11px;
+                background-color: #f1dcdb;
+            }
+            
+            .currency_total .value.red {
+                background-color: #f1dcdb;
+                color: #de0a0a;
+            }
+            
+            .currency_total .value.blue {
+                background-color: #dce6f0;
+            }
+            
+            .currency_total .value2 {
+                background-color: #fff;
+                border: 0;
+            }
+            
+            .addition_table {
+                color: #000;
+                font-size: 8px;
+            }
+            
+            table.addition_table>tbody>tr>td {
+                width: 50%;
+            }
+            
+            .addition_table td.label {
+                padding: 3px 5px;
+                text-align: left;
+                width: 50%;
+                padding-left: 40px;
+            }
+            
+            .addition_inp {
+                border: 0.5px solid #000;
+                min-height: 140px;
+                background-color: #f1dcdb;
+                padding: 3px 5px;
+            }
+            
+            .addition_inp1 {
+                height: 55px;
+                border: 0.5px solid #000;
+                background: #f2f2f2;
+                padding: 3px 5px;
+            }
+            
+            .addition_inp2 {
+                height: 68px;
+                border: 0.5px solid #000;
+                background: #f2f2f2;
+                padding: 3px 5px;
+            }
+            
+            .center_align_table {
+                display: inline-block;
+                width: 100%;
+                border: 0;
+                border-collapse: collapse;
+                margin-top: 20px;
+                font-size: 8px;
+            }
+            
+            .center_align_table th {
+                font-weight: 600;
+                padding: 8px 10px;
+                font-size: 9px;
+            }
+            
+            .center_align_table th,
+            .center_align_table td {
+                width: 300px;
+                text-align: center;
+                padding: 3px 5px;
+            }
+            
+            .center_align_table td .inp {
+                padding: 4.5px 5px;
+                min-height: 11px;
+                color: #000;
+                border: 0.5px solid #000;
+            }
+            
+            .center_align_table td p {
+                margin: 0;
+            }
+            
+            .center_align_table td .inp p {
+                margin: 0;
+                line-height: 13px;
+                font-weight: 600;
+            }
+            
+            .center_align_table td .inp.red {
+                background-color: #f1dcdb;
+                color: #de0a0a;
+            }
+            
+            .center_align_table td .inp.blue {
+                background-color: #dce6f0;
+            }
+            
+            .center_align_table td .inp.grey {
+                background-color: #f2f2f2;
+                min-height: 60px;
+            }
+            
+            .internal_use_table td.fullwidth_table62_lab {
+                width: 150px;
+            }
+            
+            .internal_use_table td.fullwidth_table62_lab {
+                width: 290px;
+            }
+            
+            .internal_use_table table.fullwidth_table62 {
+                width: 55%;
+            }
+            
+            .internal_use_table table.fullwidth_table38 {
+                width: 45%;
+            }
+            
+            .internal_use_table div.fullwidth_table38_inp {
+                width: 293px;
+                text-align: center;
+            }
+            
+            .internal_use_table td.fullwidth_table38_lab {
+                width: 100px;
+                padding-left: 40px;
+            }
+            
+            .internal_use_table div.fullwidth_table62_inp {
+                width: 190px;
+                text-align: center;
+            }
+            
+            .internal_use_table div.fullwidth_table38_inp.grey {
+                background: #f2f2f2;
+                min-height: 50px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="footer">
+            <div class="footer_block">
+                <div class="left_footer_block">
+                    <div>BDX New Service Order Form - Eng only10032021.xlsx</div>
+                    <div>4/25/2022</div>
+                </div>
+                <div class="right_footer_block">
+                    <div>Commercial in confidence</div>
+                    <div>Page <span class="pagenumber" /> of <span class="pagecount" /></div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="logo_W_head">
+                <div class="main_head_txt">
+                    <div class="h1">Colocation Service Order Form</div>
+                    <p class="subh1">(For new orders only)</p>
+                </div>
+                <div class="main_head_logo">
+                    <apex:image url="{!$Resource.BDX_logo}" height="34" styleClass="logo_img" />
+                    <div class="logo_text">
+                        BDX (Singapore) Pte Ltd
+                    </div>
+                    <div class="logo_text">
+                        UEN 201926287W
+                    </div>
+                </div>
+            </div>
+            <table class="fullwidth_table">
+                <tbody>
+                    <tr class="table_header">
+                        <td class="thead_txt">Client Data</td>
+                        <td class="thead_txt1">BDX data</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="table_flexone">
+                <table class="fullwidth_table62">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Company Name</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp blue">Please enter Bill Profile ID</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Account Code </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp blue">Please enter Bill Profile ID </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Bill Profile ID</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please Select </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Billing Address
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp blue">Please enter Bill Profile ID</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Billing Contact Person</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp blue">Please enter Bill Profile ID</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Billing Contact Person Contact Number
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp blue">Please enter Bill Profile ID</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Billing Contact Person Email
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp blue">Please enter Bill Profile ID</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Technical Contact Person </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please enter the info required.</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Technical Contact Person Contact Number
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please enter the info required.</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Technical Contact Person Email
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please enter the info required.</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Purchase Order Reference Number
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please enter the info required.</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Client Type</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please Select
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="fullwidth_table38">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">BDX Contracting</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp blue">BDX (Singapore) Pte Ltd</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">BDX Billing
+                                    Entity</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp blue">BDX (Singapore) Pte Ltd
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Account
+                                    Manager</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp red">Please enter the info required</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Sales I.D.
+                                    Number</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp red">Please enter the info required</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Contact
+                                    Number</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp red">Please enter the info required</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Email</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp red">Please enter the info required</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Quotation
+                                    Number</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp red">Please enter the info required</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <table class="fullwidth_table">
+                <tbody>
+                    <tr class="table_header">
+                        <td class="thead_txt">Service Details and Charges (all charges are exclusive of Taxes)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="table_flexone">
+                <table class="fullwidth_table62">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Order Type</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_tableSm_inp">New</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Currency</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_tableSm_inp red">Please Select</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Committed Period </label>
+                            </td>
+                            <td class="fullwidth_table62_inp flex">
+                                <div class="fullwidth_tableSm_inp red mr-5">Please enter the info required. </div>
+                                <div class="months"> month(s)</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Customer Request Date (CRD)</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_tableSm_inp red">Please enter the info required.</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="notice">1. This is not the Service Start Date, which will be advised by BDx upon acceptance of this order. BDX, in our best endeavor, strives to align Service Start Date with Customer Request Date.
+            </div>
+            <div class="table_flexone">
+                <table class="fullwidth_table62">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Country</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_tableSm_inp blue">Singapore</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Data Centre </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_tableSm_inp blue">SIN1</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Address</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_tableXl_inp "></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="page-break-after:always;"></div>
+            <table class="fullwidth_table">
+                <tbody>
+                    <tr class="table_header f2_bg">
+                        <td class="thead_f2_bg">Colocation Rack and Cage / Private Room Services</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="table_flexone">
+                <table class="fullwidth_table62">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Power Consumption Model</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_tableSm_inp blue">Metered usage </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Excess Power Consumption Charges</label>
+                            </td>
+                            <td class="fullwidth_table62_inp flex">
+                                <div class="fullwidth_tableSm_inp mr-5">USD 2,000 </div>
+                                <div class="months"> per kilowatt exceeded </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Annual Price Increase Percentage </label>
+                            </td>
+                            <td class="fullwidth_table62_inp flex">
+                                <div class="fullwidth_tableSm_inp ">Greater of CPI or 3% </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="fullwidth_table38">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab xl">
+                                <label class="fullwidth_table62_lab">Electricity tariff ($ per kWH)</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_tableSm_inp red">Please enter the info required.</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab xl">
+                                <label class="fullwidth_table62_lab">Power Usage Effectiveness</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_tableSm_inp red">Please enter the info required</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <table class="colocation_table">
+                <thead>
+                    <tr>
+                        <th class="colocation_table_first td1">Item #</th>
+                        <th class="colocation_table_first td2">Colocation Rack / Cage / Private Room?</th>
+                        <th class="colocation_table_first td3">Quantity of racks</th>
+                        <th class="colocation_table_first td4">Type of rack</th>
+                        <th class="colocation_table_first td5">Rack Dimension (Width x Depth x Height)</th>
+                        <th class="colocation_table_first td6">Power Per Rack (kW or kVA) </th>
+                        <th class="colocation_table_first td7">No. of power strips per rack </th>
+                        <th class="colocation_table_first td8">Total Non Recurring Charge (NRC</th>
+                        <th class="colocation_table_first td9">Total Monthly Recurring Charge (MRC)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="colocation_table_first td1">1</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">2</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">3</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">4</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">5</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1 no_border"></td>
+                        <td class="colocation_table_first td2 no_border"></td>
+                        <td class="colocation_table_first td3 no_border"></td>
+                        <td class="colocation_table_first td4 no_border"></td>
+                        <td class="colocation_table_first td5 no_border"></td>
+                        <td class="colocation_table_first td6 no_border"></td>
+                        <td class="colocation_table_first td7 no_border txt_r_aln">Total</td>
+                        <td class="colocation_table_first td8">$0.00</td>
+                        <td class="colocation_table_first td9">$0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="fullwidth_table">
+                <tbody>
+                    <tr class="table_header f2_bg">
+                        <td class="thead_f2_bg">Colocation Cross-Connect Services </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="colocation_table colocation_table2nd">
+                <thead>
+                    <tr>
+                        <th class="colocation_table_first td1" rowspan="2">Item #</th>
+                        <th class="colocation_table_first td2" rowspan="2">Cable Type2</th>
+                        <th class="colocation_table_first td3" rowspan="2">Quantity</th>
+                        <th class="colocation_table_first" colspan="2">A-End</th>
+                        <th class="colocation_table_first bg_bf" colspan="2">B-End</th>
+                        <th class="colocation_table_first td8" rowspan="2">Media converter required4</th>
+                        <th class="colocation_table_first td9" rowspan="2">Total Non Recurring Charge (NRC)</th>
+                        <th class="colocation_table_first td10" rowspan="2">Total Monthly Recurring Charge (MRC) </th>
+                    </tr>
+                    <tr>
+                        <th class="colocation_table_first td4">Room ID / Cage ID / Rack ID3</th>
+                        <th class="colocation_table_first td5">Interface Type</th>
+                        <th class="colocation_table_first td6">Room ID / Cage ID / Rack ID5</th>
+                        <th class="colocation_table_first td7">Interface Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="colocation_table_first td1">1</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                        <td class="colocation_table_first td10"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">2</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                        <td class="colocation_table_first td10"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">3</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                        <td class="colocation_table_first td10"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">4</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                        <td class="colocation_table_first td10"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">5</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                        <td class="colocation_table_first td6"></td>
+                        <td class="colocation_table_first td7"></td>
+                        <td class="colocation_table_first td8"></td>
+                        <td class="colocation_table_first td9"></td>
+                        <td class="colocation_table_first td10"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1 no_border"></td>
+                        <td class="colocation_table_first td2 no_border"></td>
+                        <td class="colocation_table_first td3 no_border"></td>
+                        <td class="colocation_table_first td4 no_border"></td>
+                        <td class="colocation_table_first td5 no_border"></td>
+                        <td class="colocation_table_first td6 no_border"></td>
+                        <td class="colocation_table_first td7 no_border"></td>
+                        <td class="colocation_table_first td8 no_border txt_r_aln">Total</td>
+                        <td class="colocation_table_first td9">$0.00</td>
+                        <td class="colocation_table_first td10">$0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="notice">2. Structured cabling / prelaid cabling is to be raised under "Miscellaneous and Other Charges"
+
+            </div>
+            <div class="notice">3. If cross-connect is purchased together with new rack service and the rack ID is not known yet, key in "This is a new rack" in the rack ID cell.
+            </div>
+            <div class="notice">4. If Media Converter is required, the charges for Media Converter are to be added under Miscellaneous and Other Charges section
+
+            </div>
+            <div class="notice">5. If B-end rack belongs to another customer, the requesting customer must submit a LOA (letter of authorization) from the B-end customer along with this order form. LOA is to be attached in this form in Additional Information section.
+            </div>
+            <div style="page-break-after:always;"></div>
+            <table class="fullwidth_table">
+                <tbody>
+                    <tr class="table_header f2_bg">
+                        <td class="thead_f2_bg">Miscellaneous and Other Charges </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="colocation_table colocation_table3rd">
+                <thead>
+                    <tr>
+                        <th class="colocation_table_first td1">Item #</th>
+                        <th class="colocation_table_first td2">Charge Description </th>
+                        <th class="colocation_table_first td3">Quantity </th>
+                        <th class="colocation_table_first td4">Total Non Recurring Charge (NRC)</th>
+                        <th class="colocation_table_first td5">Total Monthly Recurring Charge (MRC)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="colocation_table_first td1">1</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">2</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">3</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">4</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1">5</td>
+                        <td class="colocation_table_first td2"></td>
+                        <td class="colocation_table_first td3"></td>
+                        <td class="colocation_table_first td4"></td>
+                        <td class="colocation_table_first td5"></td>
+                    </tr>
+                    <tr>
+                        <td class="colocation_table_first td1 no_border"></td>
+                        <td class="colocation_table_first td2 no_border"></td>
+                        <td class="colocation_table_first td3 no_border txt_r_aln">Total</td>
+                        <td class="colocation_table_first td4">$0.00 </td>
+                        <td class="colocation_table_first td5">$0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="fullwidth_table">
+                <tbody>
+                    <tr class="table_header f2_bg">
+                        <td class="thead_f2_bg">Smart Hands Service </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="table_flexone">
+                <table class="fullwidth_table62">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab w_100">
+                                <label class="fullwidth_table62_lab">Pricing Model</label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_tableSm_inp"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table_flexone table_head_inp">
+                <div class="full_w_table_lab w_100">
+                    Scope of Work
+                </div>
+                <div class="full_w_table_inp">
+                </div>
+                <div class="table_W_head">
+                    <div class="table_th">
+                        Pay Per Use
+                    </div>
+                    <div class="table_th table_th2">
+                        Total Monthly Recurring Charge (MRC)
+                    </div>
+                </div>
+            </div>
+            <div class="currency_total">
+                <div class="label">
+                    Currency
+                </div>
+                <div class="value red">
+                </div>
+                <div class="value value2">
+                </div>
+            </div>
+            <div class="currency_total">
+                <div class="label">
+                    GRAND TOTAL
+                </div>
+                <div class="value blue">
+                    0.00
+                </div>
+                <div class="value blue">
+                    0.00
+                </div>
+            </div>
+            <table class="fullwidth_table">
+                <tbody>
+                    <tr class="table_header">
+                        <td class="thead_txt">Additional Information (if any)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_flexone addition_table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="addition_inp"></div>
+                        </td>
+                        <td>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="label">Attach Feasibility Form</td>
+                                        <td>
+                                            <div class="addition_inp1"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <p>For Cross Connect Services only </p>
+                                            <p> Attach LOA (letter of authorization) if the cross connect you ordered is connecting to another rack which does not belong to you.</p>
+                                        </td>
+                                        <td>
+                                            <div class="addition_inp2"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="page-break-after:always;"></div>
+            <table class="fullwidth_table">
+                <tbody>
+                    <tr class="table_header">
+                        <td class="thead_txt">Terms and Conditions
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="notice">1) REF</div>
+            <div class="notice">2) All charges are exclusive of taxes. </div>
+            <div class="notice">3) Smart hands service is billed in 60 minutes incremental. </div>
+            <table class="table_flexone center_align_table">
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th></th>
+                        <th>BDX</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="inp red">Please enter the info required.
+                            </div>
+                        </td>
+                        <td>
+                            <p><b>SIGNED for</b></p> (by its authorized representative)
+                        </td>
+                        <td>
+                            <div class="inp blue">
+                                <p>
+                                    BDX (Singapore) Pte Ltd
+                                </p>
+                                <p>
+                                    UEN 201926287W
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="inp red">Please enter the info required.
+                            </div>
+                        </td>
+                        <td><b>Name</b></td>
+                        <td>
+                            <div class="inp red">Please enter the info required.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="inp red">Please enter the info required.
+                            </div>
+                        </td>
+                        <td><b>Title</b></td>
+                        <td>
+                            <div class="inp red">Please enter the info required.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="inp red">Please enter the info required.
+                            </div>
+                        </td>
+                        <td><b>Date</b></td>
+                        <td>
+                            <div class="inp red">Please enter the info required.
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="inp grey"></div>
+                        </td>
+                        <td><b>Signature</b></td>
+                        <td>
+                            <div class="inp grey"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="fullwidth_table">
+                <tbody>
+                    <tr class="table_header">
+                        <td class="thead_txt">For Internal Use Only (to be filled by BDX internal team)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="table_flexone internal_use_table">
+                <table class="fullwidth_table62">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab"><b>Documents received: </b></label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="fullwidth_table38">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab"><b>Received by:
+                                    </b></label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="fullwidth_table62">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Master Service Agreement
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please Select
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Service Schedule
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please Select
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Service Order Form
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please Select
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Account Creation Form (new accounts only)
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please Select
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Facilities Guide
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please Select</div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Data Centre Forms (eg. AF forms)
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please Select
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Service Handover Date
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please enter the info required.
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table62_lab">
+                                <label class="fullwidth_table62_lab">Service Bill Start Date
+                                </label>
+                            </td>
+                            <td class="fullwidth_table62_inp">
+                                <div class="fullwidth_table62_inp red">Please enter the info required.
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="fullwidth_table38">
+                    <tbody>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Name</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp red">Please enter the info required.
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Title</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp red">Please enter the info required.
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Department</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp red">Please enter the info required.
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Date</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp red">Please enter the info required.
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="table_body">
+                            <td class="fullwidth_table38_lab">
+                                <label class="fullwidth_table38_lab">Signature</label>
+                            </td>
+                            <td class="fullwidth_table38_inp">
+                                <div class="fullwidth_table38_inp grey">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</apex:page>
