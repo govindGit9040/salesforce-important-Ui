@@ -1,0 +1,631 @@
+<apex:page renderAs="pdf" showHeader="false" sidebar="false" extensions="CreateInvoiceExtension"
+    standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" standardController="Order">
+
+    <head>
+        <style>
+            @page {
+                margin: 0.7in 0.6in 0.7in;
+                /* PDF width, height, margin */
+            }
+
+            @page {
+                @top-center {
+                    content: element(header);
+                }
+
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+
+            body {
+                font-size: 12px;
+                font-family: Arial, sans-serif;
+            }
+
+            div.header {
+                padding: 10px;
+                display: inline-block;
+                width: 100%;
+                position: running(header);
+                font-size: 11px;
+            }
+
+            .header_date_time {
+                float: left;
+                width: 20%;
+            }
+
+            .header_center_align {
+                float: left;
+                width: 80%;
+                text-align: center;
+            }
+
+            div.footer {
+                display: block;
+                padding: 5px;
+                position: running(footer);
+            }
+
+            .pagenumber:before {
+                content: counter(page);
+            }
+
+            .pagecount:before {
+                content: counter(pages);
+            }
+
+            .comp_logo_address {
+                display: inline-block;
+                width: 100%;
+                margin: 0px 0 0;
+            }
+
+            .com_logo {
+                width: 70%;
+                float: left;
+            }
+
+            .com_address {
+                width: 30%;
+                float: left;
+            }
+
+            .com_logo img {
+                width: 300px;
+            }
+
+            .com_address {
+                margin-top: 20px;
+            }
+
+            .com_address p {
+                font-size: 14px;
+                line-height: 19px;
+                margin: 0;
+                color: #000;
+            }
+
+            .row_3_col {
+                display: inline-block;
+                width: 100%;
+            }
+
+            .col_1_3 {
+                float: left;
+                width: 31.33%;
+                padding-right: 2%;
+            }
+
+            .bold_c_head {
+                font-size: 20px;
+                margin: 0;
+                margin-bottom: 5px;
+            }
+
+            .col_1_3 .bold_c_head {
+                margin-bottom: 20px;
+            }
+
+            .row_col .bold_c_head {
+                margin-bottom: 20px;
+            }
+
+            .col_1_3 p {
+                font-size: 14px;
+                margin: 0;
+                line-height: 20px;
+                color: #191919;
+            }
+
+            .invoice_for_order {
+                margin-top: 35px;
+                margin-bottom: 30px;
+            }
+
+            .invoice_for_order p {
+                margin: 0;
+                font-size: 12px;
+                color: rgb(116, 116, 116);
+                font-weight: bold;
+            }
+
+            .tax_collect_text {
+                text-align: center;
+                font-size: 14px;
+                font-weight: 700;
+                margin: 25px 0;
+            }
+
+            .center_align_btxt {
+                text-align: center;
+                font-size: 14px;
+                line-height: 18px;
+                font-weight: 700;
+                margin: 10px 0;
+            }
+
+            .other {
+                font-weight: 700;
+                font-size: 14px;
+                margin: 0;
+                line-height: 20px;
+                margin-bottom: 5px;
+            }
+
+            .row_col {
+                margin-bottom: 50px;
+                display: inline-block;
+                width: 100%;
+            }
+
+            .row_col p {
+                font-size: 14px;
+                margin: 0;
+                line-height: 20px;
+            }
+
+            .row_col p small {
+                font-size: 13px;
+                margin-top: 5px;
+                color: rgb(92, 92, 92);
+            }
+
+            .customer_details .bold_c_head {
+                margin-bottom: 20px;
+            }
+
+            .customer_details {
+                margin-top: 50px;
+                display: inline-block;
+                width: 100%;
+            }
+
+            .customer_details ul {
+                padding-left: 30px;
+                margin: 0;
+            }
+
+            .customer_details li {
+                font-size: 14px;
+                line-height: 20px;
+            }
+
+            .table_area thead {
+                display: table-header-group;
+            }
+
+            .table_area tfoot {
+                display: table-footer-group;
+            }
+
+            /* table.table_area {
+                -fs-table-paginate: paginate;
+            } */
+            table.table_area {
+                -fs-table-paginate: paginate;
+            }
+
+            table.table_area {
+                width: 100%;
+                border-collapse: collapse;
+                border: 0;
+
+            }
+
+            tr.table_header {
+                background-color: #252525;
+                border: 0;
+            }
+
+            td.thead_txt {
+                padding: 8px 12px;
+                color: #fff;
+                border: 0;
+                font-size: 14px;
+                border: 1px solid #252525;
+                font-weight: 600;
+            }
+
+            td.table__txt {
+                padding: 8px 12px;
+                color: #000;
+                border-collapse: collapse;
+                border: 0;
+                font-size: 14px;
+                border: 1px solid #ddd;
+            }
+
+            td.thead_txt1 {
+                width: 30%;
+            }
+
+            td.thead_txt2 {
+                width: 40%;
+            }
+
+            td.thead_txt3 {
+                width: 14%;
+                text-align: center;
+            }
+
+            td.thead_txt4 {
+                width: 16%;
+                text-align: right;
+            }
+
+            .row_stripped tr:nth-of-type(2n) {
+                background-color: #f0f0f0;
+            }
+
+            .right_aligned_bill {
+                border-collapse: collapse;
+                table-layout: fixed;
+                width: 100%;
+            }
+
+            .right_aligned_bill td {
+                border: 0;
+                text-align: right;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .table__txt3 {
+                font-weight: bold;
+            }
+
+            td.table__txt1 {
+                width: 30%;
+            }
+
+            td.table__txt2 {
+                width: 24%;
+            }
+
+            td.table__txt3 {
+                width: 30%;
+            }
+
+            td.table__txt4 {
+                width: 16%;
+            }
+
+            .table__txt p {
+                font-size: 12px;
+                text-align: right;
+                margin: 0;
+                margin-top: 3px;
+                line-height: 16px;
+            }
+
+            .m_top_60 {
+                margin-top: 60px;
+            }
+
+            .footer {
+                display: inline-block;
+                width: 100%;
+            }
+
+            .footer_w_pageno {
+                border-collapse: collapse;
+                border: 0;
+                font-size: 10px;
+                table-layout: fixed;
+                width: 100%;
+            }
+
+            .td1 {
+                width: 92%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+
+            }
+            
+            .td1 a{
+                color: #000;
+                display: block;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+            .td2 {
+                width: 8%;
+               text-align: right;
+            }
+            .page_no{
+                width: max-content;
+                margin-left: auto;
+            }
+        </style>
+
+    </head>
+
+    <body>
+        <div class="header">
+            <span class="header_date_time">{!DAY(TODAY())}/{!MONTH(TODAY())}/{!YEAR(TODAY())}, <apex:outputText value="{0, Time, HH:mm a}">
+    <apex:param value="{!NOW()}"/> <!-- Date/Time field --> 
+</apex:outputText> </span>
+
+            <span class="header_center_align">SLV ORDER SYSTEM - Invoice {!order.OrderNumber}</span>
+        </div>
+        <div class="footer">
+            <table class="footer_w_pageno">
+                <tr>
+                    <td class="td1">
+                        <a
+                            href="">https://order.streamlinevape.com/wp-admin/edit.phporder.streamlinevape.com/wp-admin/edit.phporder.streamlinevape.com/wp-admin/edit.phphttps://order.streamlinevape.com/wp-admin/edit.phporder.streamlinevape.com/wp-admin/edit.phporder.streamlinevape.com/wp-admin/edit.php</a>
+                    </td>
+                    <td class="td2">
+                        <div class="page_no"><span class="pagenumber" />/<span class="pagecount" /></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="content">
+            <div class="comp_logo_address">
+                <div class="com_logo">
+                    <apex:image url="{!URLFOR($Resource.CompanyLogo)}" />
+                </div>
+                <div class="com_address">
+                    <p>{!organization.Street}</p>
+                    <p> {!organization.City}</p>
+                    <p> {!organization.State}, {!organization.Country}, {!organization.PostalCode} </p>
+                </div>
+            </div>
+            <div class="invoice_for_order">
+                <h2 class="bold_c_head">Invoice for order {!order.OrderNumber}</h2>
+                <p>Order Date: <apex:outputText value="{0,date,medium}"> 
+                                        <apex:param value="{!order.CreatedDate}" /> 
+                                    </apex:outputText></p>
+            </div>
+            <div class="row_3_col">
+                <div class="col_1_3">
+                    <h2 class="bold_c_head">Billing Address</h2>
+                    <p><i>{!order.BillToContact.Name}</i></p>
+                    <p><i>{!order.BillingStreet}</i></p>
+                    <p><i>{!order.BillingCity}, {!order.BillingState} {!order.BillingPostalCode} {!order.BillingCountry}</i></p>
+                    <!--<p><i>719-569-7930</i></p>-->
+                </div>
+                <div class="col_1_3">
+                    <h2 class="bold_c_head">Shipping Address</h2>
+                    <p><i>{!order.ShipToContact.Name}</i></p>
+                    <p><i>{!order.ShippingStreet}</i></p>
+                    <p><i>{!order.ShippingCity}, {!order.ShippingState} {!order.ShippingPostalCode} {!order.ShippingCountry}</i></p>
+                </div>
+                <div class="col_1_3">
+                    <h2 class="bold_c_head">Shipping Method</h2>
+                    <p><i>{!order.Requested_Shipping_Service__c}</i></p>
+                </div>
+            </div>
+            <div class="tax_collect_text">
+                {!IF(order.Excise_Tax_Collected__c !='No','Excise Tax was collected on this order.','')}
+            </div>
+
+            <!--<div class="row_col">
+                <h2 class="bold_c_head">Tracking Information</h2>
+                <p class="other">
+                    Other
+                </p>
+                <p>
+                    <i> 177349487</i>
+                </p>
+                <p><small>Shipped on June 3, 2022</small></p>
+            </div>-->
+            <table class="table_area" style="border-collapse: collapse;" cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr class="table_header" >
+                        <td class="thead_txt thead_txt1" cellspacing="0" cellpadding="0">SKU</td>
+                        <td class="thead_txt thead_txt2" cellspacing="0" cellpadding="0">Product</td>
+                        <td class="thead_txt thead_txt3" cellspacing="0" cellpadding="0">Quantity</td>
+                        <td class="thead_txt thead_txt4" cellspacing="0" cellpadding="0">Price</td>
+                    </tr>
+                </thead>
+                <tbody class="row_stripped">
+					<apex:variable value="{!1}" var="i"/>
+					<apex:repeat value="{!orderItems}" var="eachItem">
+						<tr  style="background-color:{!IF(mod(i,2)==0, '#F0F0F0', '')};">
+							<td class="table__txt">{!eachItem.Product2.StockKeepingUnit}</td>
+							<td class="table__txt">{!eachItem.Product2.Name}</td>
+							<td class="table__txt thead_txt3">{!eachItem.Quantity}</td>
+							<td class="table__txt thead_txt4"><apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!eachItem.UnitPrice}"/>
+                                </apex:outputText></td>
+						</tr>
+						<apex:variable value="{!i+1}" var="i" />
+					</apex:repeat>
+                    <!-- <tr>
+                        <td class="table__txt">TOBACCO-EXCISE-TAX
+                        </td>
+                        <td class="table__txt">FEE - Tobacco Excise Tax
+                        </td>
+                        <td class="table__txt thead_txt3">1</td>
+                        <td class="table__txt thead_txt4">$2,690.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">788782965228</td>
+                        <td class="table__txt">JUICE HEAD - Blueberry Lemon 3mg/100ml</td>
+                        <td class="table__txt thead_txt3">100</td>
+                        <td class="table__txt thead_txt4">$650.00</td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">788782962586</td>
+                        <td class="table__txt">BAMS - Original Cannoli 6mg/100ml</td>
+                        <td class="table__txt thead_txt3">30</td>
+                        <td class="table__txt thead_txt4">$210.00 </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">TOBACCO-EXCISE-TAX
+                        </td>
+                        <td class="table__txt">FEE - Tobacco Excise Tax
+                        </td>
+                        <td class="table__txt thead_txt3">1</td>
+                        <td class="table__txt thead_txt4">$2,690.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">788782965228</td>
+                        <td class="table__txt">JUICE HEAD - Blueberry Lemon 3mg/100ml</td>
+                        <td class="table__txt thead_txt3">100</td>
+                        <td class="table__txt thead_txt4">$650.00</td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">788782962586</td>
+                        <td class="table__txt">BAMS - Original Cannoli 6mg/100ml</td>
+                        <td class="table__txt thead_txt3">30</td>
+                        <td class="table__txt thead_txt4">$210.00 </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">TOBACCO-EXCISE-TAX
+                        </td>
+                        <td class="table__txt">FEE - Tobacco Excise Tax
+                        </td>
+                        <td class="table__txt thead_txt3">1</td>
+                        <td class="table__txt thead_txt4">$2,690.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">788782965228</td>
+                        <td class="table__txt">JUICE HEAD - Blueberry Lemon 3mg/100ml</td>
+                        <td class="table__txt thead_txt3">100</td>
+                        <td class="table__txt thead_txt4">$650.00</td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">788782962586</td>
+                        <td class="table__txt">BAMS - Original Cannoli 6mg/100ml</td>
+                        <td class="table__txt thead_txt3">30</td>
+                        <td class="table__txt thead_txt4">$210.00 </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">TOBACCO-EXCISE-TAX
+                        </td>
+                        <td class="table__txt">FEE - Tobacco Excise Tax
+                        </td>
+                        <td class="table__txt thead_txt3">1</td>
+                        <td class="table__txt thead_txt4">$2,690.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">788782965228</td>
+                        <td class="table__txt">JUICE HEAD - Blueberry Lemon 3mg/100ml</td>
+                        <td class="table__txt thead_txt3">100</td>
+                        <td class="table__txt thead_txt4">$650.00</td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">788782962586</td>
+                        <td class="table__txt">BAMS - Original Cannoli 6mg/100ml</td>
+                        <td class="table__txt thead_txt3">30</td>
+                        <td class="table__txt thead_txt4">$210.00 </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">TOBACCO-EXCISE-TAX
+                        </td>
+                        <td class="table__txt">FEE - Tobacco Excise Tax
+                        </td>
+                        <td class="table__txt thead_txt3">1</td>
+                        <td class="table__txt thead_txt4">$2,690.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt">788782965228</td>
+                        <td class="table__txt">JUICE HEAD - Blueberry Lemon 3mg/100ml</td>
+                        <td class="table__txt thead_txt3">100</td>
+                        <td class="table__txt thead_txt4">$650.00</td>
+                    </tr> -->
+
+
+                </tbody>
+                <table class="right_aligned_bill">
+                    <tr>
+                        <td class="table__txt table__txt1"></td>
+                        <td class="table__txt table__txt2"></td>
+                        <td class="table__txt table__txt3">Subtotal:</td>
+                        <td class="table__txt table__txt4">{!order.Total_Amount__c}</td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt table__txt1"></td>
+                        <td class="table__txt table__txt2"></td>
+                        <td class="table__txt table__txt3">Shipping:</td>
+                        <td class="table__txt table__txt4">{!IF(order.Shipping_Tax__c !=null,order.Shipping_Tax__c,'Free Shipping')}
+                            <!--<p>Via Shipping Quote</p>-->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt table__txt1"></td>
+                        <td class="table__txt table__txt2"></td>
+                        <td class="table__txt table__txt3">Tax:</td>
+                        <td class="table__txt table__txt4">{!IF(order.Total_Tax__c !=null,order.Total_Tax__c,0)}</td>
+                    </tr>
+                    <tr>
+                        <td class="table__txt table__txt1"></td>
+                        <td class="table__txt table__txt2"></td>
+                        <td class="table__txt table__txt3">Payment Method:</td>
+                        <td class="table__txt table__txt4">{!order.Payment_Type__c}</td>
+                    </tr>
+					<!--<tr>
+                        <td class="table__txt table__txt1"></td>
+                        <td class="table__txt table__txt2"></td>
+                        <td class="table__txt table__txt3">Discount %:</td>
+                        <td class="table__txt table__txt4">{!order.Total_Discount__c}</td>
+                    </tr>-->
+                    <tr>
+                        <td class="table__txt table__txt1"></td>
+                        <td class="table__txt table__txt2"></td>
+                        <td class="table__txt table__txt3">Total:</td>
+                        <td class="table__txt table__txt4">{!order.Total_Amount__c }</td>
+                    </tr>
+                </table>
+            </table>
+            <div class="customer_details">
+                <h2 class="bold_c_head">Customer Details</h2>
+                <ul>
+                    <li><strong>Email:</strong> {!order.Account.Email__c} </li>
+                    <li><strong>Phone:</strong> {!order.Account.Phone}</li>
+                </ul>
+            </div>
+            <div class="center_align_btxt m_top_60">
+                Streamline Vape Co. Wire Instructions
+            </div>
+            <div class="center_align_btxt">
+                US Bank
+            </div>
+            <div class="center_align_btxt">
+                Bank Address: 12112 Valley View St. Garden Grove, CA 92845
+            </div>
+            <div class="center_align_btxt">
+                Streamline Vape Co. LLC
+            </div>
+
+            <div class="center_align_btxt">
+                Business Address: 11266 Monarch St. Suite A Garden Grove, CA 92841
+            </div>
+            <div class="center_align_btxt">
+                Account Number #157519625832
+            </div>
+            <div class="center_align_btxt">
+                Routing Numbers
+            </div>
+            <div class="center_align_btxt">
+                Direct Deposit #122235821
+            </div>
+            <div class="center_align_btxt">
+                SWIFT Code #USBKUS44LAX
+            </div>
+            <div class="center_align_btxt">
+                We make every effort to carefully package your order so that it will arrive complete and in
+                great condition. Unfortunately, sometimes issues arise during shipment. Report any product discrepancy
+                (damaged, missing, and/or incorrect merchandise) within 14 days of
+                receipt.
+                <br />
+                Thank you for your order! We appreciate your business!
+            </div>
+        </div>
+        <!-- Begin Default Content REMOVE THIS -->
+
+        <!-- End Default Content REMOVE THIS -->
+
+    </body>
+</apex:page>
