@@ -1,0 +1,1128 @@
+<apex:page controller="downloadWorkOrderPDF" renderAs="pdf" applyHtmlTag="false" showHeader="false" cache="true"
+    readOnly="true">
+
+    <head>
+        <style>
+            @page {
+                margin: 0.2in 0.4in 0.4in;
+                /* PDF width, height, margin */
+            }
+
+            @page {
+                @top-center {
+                    content: element(header);
+                }
+
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+
+            body {
+                font-size: 12px;
+                max-width: 900px;
+                font-family: Arial, sans-serif;
+            }
+
+            div.header {
+                padding: 10px;
+                display: inline-block;
+                width: 100%;
+                position: running(header);
+                font-size: 11px;
+            }
+
+            div.footer {
+                display: block;
+                padding: 5px;
+                position: running(footer);
+            }
+
+            .pagenumber:before {
+                content: counter(page);
+            }
+
+            .pagecount:before {
+                content: counter(pages);
+            }
+
+            .footer_w_pageno {
+                width: 100%;
+            }
+
+            .page_no {
+                text-align: center;
+            }
+
+            .transfered_by_Area {
+                display: block;
+            }
+
+            .transf_by {
+                font-size: 16px;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #000;
+                display: inline-block;
+                width: max-content;
+            }
+
+            .work_order_area {
+                display: inline-block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .date_Area {
+                width: 15%;
+                padding: 10px 2%;
+                font-weight: 700;
+                float: left;
+                font-size: 16px;
+                border: 1px solid #000;
+            }
+
+            .heading {
+                width: 54%;
+                float: left;
+                text-align: center;
+                font-size: 30px;
+                font-weight: 600;
+            }
+
+            .order_id {
+                width: 22%;
+                padding: 10px 2%;
+                font-weight: 700;
+                float: left;
+                font-size: 16px;
+                border: 1px solid #000;
+            }
+
+            .order_id .number {
+                padding-left: 10px;
+                margin-left: auto;
+            }
+
+            .customer_ship_to_table {
+                width: 100%;
+            }
+
+            .customer_ship_to_table {
+                text-align: center;
+            }
+
+            .customer_ship_to_table p,
+            .table_2 p,
+            .table_3 p {
+                margin: 0;
+            }
+
+            .customer_ship_to_table,
+            .table_2,
+            .table_3 {
+                border-collapse: collapse;
+            }
+
+            .customer_ship_to_table,
+            .customer_ship_to_table tr,
+            .customer_ship_to_table th,
+            .customer_ship_to_table td,
+            .table_2,
+            .table_2 tr,
+            .table_2 td,
+            .table_2 th {
+                border: 1px solid;
+            }
+
+            .customer_ship_to_table>thead>tr>th {
+                font-size: 15px;
+                padding: 5px 2%;
+            }
+
+            .customer_ship_to_table>tbody>tr>td {
+                font-size: 12px;
+                line-height: 15px;
+                font-weight: 600;
+                width: 50%;
+                vertical-align: top;
+                text-transform: uppercase;
+                padding: 5px;
+            }
+
+            .customer_ship_to_table .flex_td {
+                padding: 0;
+                width: 100%;
+            }
+
+            .customer_ship_to_table .flex_td .req {
+                float: left;
+                padding: 5px 2%;
+                width: 60%;
+                font-size: 13px;
+                line-height: 16px;
+            }
+
+            .customer_ship_to_table .flex_td .date {
+                padding: 5px 2%;
+                float: left;
+                font-size: 13px;
+                line-height: 16px;
+                border-left: 1px solid;
+                width: 31%;
+            }
+
+            .customer_ship_to_table .yds_td {
+                font-size: 12px;
+            }
+
+            .table_2 {
+                width: 100%;
+            }
+
+            .table_2 td {
+                font-size: 13px;
+                padding: 7px;
+            }
+
+            .table_2 .bold td p {
+                font-weight: 600;
+                padding: 5px 0;
+                text-transform: uppercase;
+            }
+
+            .qty_date_bal {
+                width: 100%;
+                border: 0;
+                border-collapse: collapse;
+            }
+
+            .qty_date_bal td,
+            .qty_date_bal tr {
+                border: 0;
+            }
+
+            .artwork_printed p {
+                line-height: 22px;
+                font-size: 14px;
+            }
+
+            .table_3 td,
+            .table_3 th {
+                text-transform: uppercase;
+                padding: 5px 7px;
+                font-size: 12px;
+                line-height: 17px;
+            }
+
+            .table_3 {
+                border-collapse: collapse;
+            }
+
+            .table_3 tr {
+                border: none;
+            }
+
+            .table_3 td {
+                border-right: solid 1px;
+                border-left: solid 1px;
+            }
+
+            .table_3 th {
+                border: 1px solid;
+            }
+
+            .bar_code {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            .bar_code tr td {
+                border: 1px solid;
+                padding: 2px;
+            }
+
+            .bar_code img {
+                width: 120px;
+            }
+
+            .acknw h2 {
+                font-size: 20px;
+                font-weight: 700;
+                text-align: center;
+                margin: 0;
+                text-transform: uppercase;
+                margin-bottom: 25px;
+            }
+
+            .table_4 {
+                width: 100%;
+                font-size: 12px;
+                border-collapse: collapse;
+                margin-top: 30px;
+                font-weight: 600;
+            }
+
+            .table_4 td {
+                padding: 0;
+            }
+
+            .table_4 .poso_q {
+                padding: 10px;
+                border: 1px solid #000;
+            }
+
+            .table_4 .term {
+                width: 70%;
+                margin: 0 auto;
+                display: content;
+                border: 1px solid;
+                font-weight: 400;
+
+            }
+
+            .table_4 .term p {
+                border-bottom: 1px solid;
+                margin: 0;
+                line-height: 20px;
+                padding: 5px;
+            }
+
+            .table_4 .term p.last {
+                border-bottom: 0;
+            }
+
+            .table_4 .date_via {
+                border-collapse: separate;
+                width: 100%;
+                text-transform: uppercase;
+            }
+
+            .table_4 .date_via td {
+                border: 1px solid;
+                padding: 5px 10px;
+            }
+
+            .table_4 .date_via td p {
+                line-height: 20px;
+                margin: 0%;
+                padding: 5px 10px;
+            }
+
+            .table_5 {
+                margin-top: 30px;
+            }
+
+            .table_5 .center {
+                text-align: center;
+            }
+
+            .table_6 .total {
+                font-size: 20px;
+                font-weight: 600;
+            }
+
+            .table_5 .right,
+            .table_6 .right {
+                text-align: right;
+            }
+
+            .table_7,
+            .table_7 table,
+            .invoice_Table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            .table_7 table,
+            .invoice_Table {
+                border: 1px solid;
+            }
+
+            .invoice_Table {
+                margin-top: 15px;
+                margin-bottom: 20px;
+            }
+
+            .invoice_Table td p {
+                margin: 0;
+                line-height: 18px;
+                font-size: 13px;
+                text-transform: uppercase;
+            }
+
+            .invoice_date_Td {
+                text-align: right;
+            }
+
+            .invoice_date_Td h3 {
+                font-size: 22px;
+                margin: 0;
+                margin-bottom: 15px;
+            }
+
+            .invoice_date_Td table.invoice_date {
+                margin-left: auto;
+                border-collapse: collapse;
+                border: 1px solid;
+            }
+
+            .invoice_date_Td table.invoice_date td {
+                border: 1px solid;
+                font-size: 13px;
+                padding: 5px 15px;
+                text-align: center;
+            }
+
+            .table_7 {
+                margin-bottom: 25px;
+            }
+
+            .table_7 p {
+                margin: 0;
+                line-height: 18px;
+                font-size: 13px;
+            }
+
+            .table_7 td {
+                vertical-align: top;
+            }
+
+            .table_8 td,
+            .table_7 table td,
+            .table_7 table th {
+                border: 1px solid;
+                font-size: 13px;
+                padding: 5px 7px;
+            }
+
+            .table_7 .height {
+                min-height: 95px;
+                padding: 10px;
+                text-transform: uppercase;
+                font-weight: 600;
+                text-align: center;
+            }
+
+            .table_8 {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            .table_8 td,
+            .table_9 th {
+                text-align: center;
+                padding: 6px 7px;
+                border: 1px solid;
+                font-size: 13px;
+
+            }
+
+            .table_9 th {
+                background-color: #f0f0f0;
+            }
+
+            .table_10 .total p {
+                width: 100%;
+                display: inline-block;
+            }
+
+            .table_10 .total .h4 {
+                font-size: 18px;
+                font-weight: 600;
+                margin: 0;
+                line-height: 26px;
+                width: 70%;
+                float: left;
+            }
+
+            .table_10 .total span {
+                line-height: 26px;
+                width: 30%;
+                float: left;
+            }
+
+            .table_10 .right {
+                text-align: right;
+            }
+        </style>
+
+    </head>
+
+    <body>
+        <div class="header">
+            <!-- <span class="header_date_time">{!DAY(TODAY())}/{!MONTH(TODAY())}/{!YEAR(TODAY())}, <apex:outputText value="{0, Time, HH:mm a}">
+                    <apex:param value="{!NOW()}"/>
+                </apex:outputText> </span> -->
+        </div>
+        <div class="footer">
+            <table class="footer_w_pageno">
+                <tr>
+
+                    <td>
+                        <div class="page_no"><span class="pagenumber" />/<span class="pagecount" /></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="content">
+            <div class="transfered_by_Area">
+                <div class="transf_by">
+                    Transfered By: (Tranferror Name)
+                </div>
+            </div>
+            <div class="work_order_area">
+                <div class="date_Area">
+                    <span class="header_date_time">{!DAY(TODAY())}/{!MONTH(TODAY())}/{!YEAR(TODAY())}
+                        <apex:param value="{!NOW()}" />
+                    </span>
+                </div>
+                <div class="heading">
+                    Work Order
+                </div>
+                <div class="order_id">
+                    <span>TTX JOB #</span> <span class="number">268468</span>
+                </div>
+            </div>
+            <table class="customer_ship_to_table">
+                <thead>
+                    <tr>
+                        <th>
+                            Customer
+                        </th>
+
+                        <th>
+                            Ship To
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>Bullet Line</p>
+                            <p>6301 E 10th ave., Suite 110</p>
+                            <p>Hialeah, FL 33013</p>
+                        </td>
+                        <td>
+                            <p>Sharmlock</p>
+                            <p>Kathryn Hough</p>
+                            <p>153 Cartwright farm Ln</p>
+                            <p>ste 202</p>
+                            <p>Collierville tn 38017</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="yds_td">
+                            yds pulled for this job (dynamic data)
+                        </td>
+                        <td class="flex_td">
+                            <div class="req">
+                                ORIG S/D REQUESTED
+                            </div>
+                            <div class="date">
+                                12/12/2021
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_2">
+                <tbody>
+                    <tr class="bold">
+                        <td>
+                            <p>PO #: <span class="value1">dfd80000dfds722d00</span></p>
+                            <p>Ship Date: <span class="value1">12/14/2021</span></p>
+                            <p>Qty. Ordered: <span class="value1">600</span></p>
+                        </td>
+                        <td rowspan="2">
+                            <table class="qty_date_bal">
+                                <tbody>
+                                    <tr>
+                                        <td>Qty Of Shipping: <span class="value2">32</span></td>
+                                        <td>Date: <span class="value2">2/14/2021</span></td>
+                                        <td>Bal: <span class="value2">2850</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Qty Of Shipping: <span class="value2">32</span></td>
+                                        <td>Date: <span class="value2">2/14/2021</span></td>
+                                        <td>Bal: <span class="value2">2850</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Qty Of Shipping: <span class="value2">32</span></td>
+                                        <td>Date: <span class="value2">2/14/2021</span></td>
+                                        <td>Bal: <span class="value2">2850</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Qty Of Printed: <span class="value2">32</span></td>
+                                        <td>Date: <span class="value2">2/14/2021</span></td>
+                                        <td>Init: <span class="value2">2850</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Qty Of Transf: <span class="value2">32</span></td>
+                                        <td>Date: <span class="value2">2/14/2021</span></td>
+                                        <td>Init: <span class="value2">2850</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td class="artwork_printed">
+                            <p>Artwork By: <span class="value1">(value)</span></p>
+                            <p>Printed By: <span class="value1">(value)</span></p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_3">
+                <thead>
+                    <tr>
+                        <th style="width:15%;">Dept.</th>
+                        <th style="width:10%;">Qty.</th>
+                        <th style="width:15%;">Item</th>
+                        <th style="width:40%;">Description</th>
+                        <th style="width:10%;">In hands</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Art</td>
+                        <td></td>
+                        <td></td>
+                        <td>ARRIVE ALIVE - FEDEX - 1" SET UP - OUTSIDE BKGD: WHITE - IMPRINT: FULL COLOR - INSIDE BKGD:
+                            PURPLE 2685 - IMPRINT: ORANGE CMYK/ WHITE - JAC **FRONTSIDE DIFFERENT THAN BACKSIDE**</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Set Up</td>
+                        <td>2</td>
+                        <td>031-BULLET</td>
+                        <td>PLATE/PREP CHARGE</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Mouth</td>
+                        <td></td>
+                        <td>1" PRINTED PAP...</td>
+                        <td>DIGITAL - 1" PRINTED PAPER - ARRIVE ALIVE - FEDEX **FRONTSIDE DIFFERENT THAN BACKSIDE**</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>TRANSFER</td>
+                        <td></td>
+                        <td>WEPOF - 1"</td>
+                        <td>WEPOF - I" ULTRA MATERIAL - BOTH SIDES. **FRONTSIDE DIFFERENT THAN BACKSIDE**</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ASSEMBLY</td>
+                        <td>500</td>
+                        <td>SM-8111</td>
+                        <td>PLASTIC CONTOURED BREAKAWAY</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ASSEMBLY</td>
+                        <td>500</td>
+                        <td>SM-8104 </td>
+                        <td>METAL SWIVEL SNAP HOOK - STANDARD</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ASSEMBLY</td>
+                        <td>500</td>
+                        <td> 500-SM-8049 </td>
+                        <td>ARRIVE ALIVE - FEDEX - 1" X 36" - ULTRA LANYARD - SM-8049SBL</td>
+                        <td>12/17/2021</td>
+                    </tr>
+                    <tr>
+                        <td>ASSEMBLY</td>
+                        <td>500</td>
+                        <td>SM-8107</td>
+                        <td>METAL CRIMP</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>SHIP</td>
+                        <td></td>
+                        <td>
+                            <p>
+                                BULLET LINE B...
+                            </p>
+                            <p>BULLET ADDRESS UPS#
+                            </p>
+                            <p>BULLET-24 HOU...</p>
+                        </td>
+                        <td>
+                            <p>
+                                SHIP ORDER 12/14/2021 UPS NDA
+                            </p>
+                            <p>
+                                BLIND FROM SHAMROCK COMPANIES INC USE
+                            </p>
+                            <p>
+                                UPS # 6559W6
+                            </p>
+                            <p>
+                                24 HOUR SERVICE PROGRAM
+                            </p>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="bar_code" style="page-break-after:always;">
+                <tbody>
+                    <tr>
+                        <td>
+                            <apex:image url="{!objWorkOrder.QR_Code_URL__c}" styleClass="imageStyle" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="work_order_area">
+                <div class="date_Area">
+                    <span class="header_date_time">{!DAY(TODAY())}/{!MONTH(TODAY())}/{!YEAR(TODAY())}
+                        <apex:param value="{!NOW()}" />
+                    </span>
+                </div>
+                <div class="heading">
+                    Trans-Tex LLC
+                </div>
+                <div class="order_id">
+                    <span>TTX JOB #</span> <span class="number">268468</span>
+                </div>
+            </div>
+            <div class="acknw">
+                <h2>Sales order Acknowledgement</h2>
+            </div>
+            <table class="customer_ship_to_table">
+                <thead>
+                    <tr>
+                        <th>
+                            Customer
+                        </th>
+
+                        <th>
+                            Ship To
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>Bullet Line</p>
+                            <p>6301 E 10th ave., Suite 110</p>
+                            <p>Hialeah, FL 33013</p>
+                        </td>
+                        <td>
+                            <p>Sharmlock</p>
+                            <p>Kathryn Hough</p>
+                            <p>153 Cartwright farm Ln</p>
+                            <p>ste 202</p>
+                            <p>Collierville tn 38017</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_4">
+                <tbody>
+                    <tr>
+                        <td style="width: 35%;">
+                            <div class="poso_q">
+                                <p>
+                                    PO/SO #: <span>mdm54841518484181</span>
+                                </p>
+                                <p>
+                                    Qty. Ordered: <span>500</span>
+                                </p>
+
+                            </div>
+                        </td>
+                        <td style="width: 30%; text-align: center;">
+                            <div class="term">
+                                <p>Terms</p>
+                                <p class="last">Net 30</p>
+                            </div>
+                        </td>
+                        <td style="width: 35%;">
+                            <table class="date_via">
+                                <tr>
+                                    <td>
+                                        <p>Ship Date: <span>12/12/2021</span></p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p>Ship Via: <span>UPS next day air</span></p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_3 table_5">
+                <thead>
+                    <tr>
+                        <th style="width:15%; text-align: center;">Qty.</th>
+                        <th style="width:15%;">ITEM</th>
+                        <th style="width:40%;">Description</th>
+                        <th style="width:15%;">RATE</th>
+                        <th style="width:15%;" class="right">AMOUNT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="center"></td>
+                        <td></td>
+                        <td>ARRIVE ALIVE - FEDEX - 1" SET UP - OUTSIDE BKGD: WHITE - IMPRINT: FULL COLOR - INSIDE BKGD:
+                            PURPLE 2685 - IMPRINT: ORANGE CMYK WHITE - JAC **FRONTSIDE DIFFERENT THAN BACKSIDE**</td>
+                        <td></td>
+                        <td class="right"></td>
+                    </tr>
+                    <tr>
+                        <td class="center">2</td>
+                        <td>031-BULLET</td>
+                        <td>PLATE/PREP CHARGE</td>
+                        <td>36.00</td>
+                        <td class="right">72.00</td>
+                    </tr>
+                    <tr>
+                        <td class="center"></td>
+                        <td>1" PRINTED PAP...</td>
+                        <td>DIGITAL - 1" PRINTED PAPER - ARRIVE ALIVEFEDEX **FRONTSIDE DIFFERENT THAN BACKSIDE**</td>
+                        <td>0.00</td>
+                        <td class="right">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="center">500</td>
+                        <td>500-SM-8049</td>
+                        <td>ARRIVE ALIVE - FEDEX - 1" X 36" - ULTRA LANYARD-SM-8049SBL</td>
+                        <td>1.27</td>
+                        <td class="right">635.00</td>
+                    </tr>
+                    <tr>
+                        <td class="center">2</td>
+                        <td>031-BULLET</td>
+                        <td>PLATE/PREP CHARGE</td>
+                        <td>36.00</td>
+                        <td class="right">72.00</td>
+                    </tr>
+                    <tr>
+                        <td class="center"></td>
+                        <td>1" PRINTED PAP...</td>
+                        <td>DIGITAL - 1" PRINTED PAPER - ARRIVE ALIVEFEDEX **FRONTSIDE DIFFERENT THAN BACKSIDE**</td>
+                        <td>0.00</td>
+                        <td class="right">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="center">500</td>
+                        <td>500-SM-8049</td>
+                        <td>ARRIVE ALIVE - FEDEX - 1" X 36" - ULTRA LANYARD-SM-8049SBL</td>
+                        <td>1.27</td>
+                        <td class="right">635.00</td>
+                    </tr>
+                    <tr>
+                        <td class="center">2</td>
+                        <td>031-BULLET</td>
+                        <td>PLATE/PREP CHARGE</td>
+                        <td>36.00</td>
+                        <td class="right">72.00</td>
+                    </tr>
+                    <tr>
+                        <td class="center"></td>
+                        <td>1" PRINTED PAP...</td>
+                        <td>DIGITAL - 1" PRINTED PAPER - ARRIVE ALIVEFEDEX **FRONTSIDE DIFFERENT THAN BACKSIDE**</td>
+                        <td>0.00</td>
+                        <td class="right">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="center">500</td>
+                        <td>500-SM-8049</td>
+                        <td>ARRIVE ALIVE - FEDEX - 1" X 36" - ULTRA LANYARD-SM-8049SBL</td>
+                        <td>1.27</td>
+                        <td class="right">635.00</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_2 table_6" style="page-break-after:always;">
+                <tbody>
+                    <tr>
+                        <td style="width: 60%;">
+                            *268468*
+                        </td>
+                        <td style="width: 20%;" class="total">
+                            Total
+                        </td>
+                        <td style="width: 20%;" class="right">
+                            $807.00
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="invoice_Table">
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>Trans-tex LLc,</p>
+                            <p>117 Pettaconset ave</p>
+                            <p>Cranston, ri 02920</p>
+                            <p>phone: 401-331-8483</p>
+                            <p>fax: 401-331-6491</p>
+                        </td>
+                        <td class="invoice_date_Td">
+                            <h3>Invoice</h3>
+                            <table class="invoice_date">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            Date
+                                        </td>
+                                        <td>
+                                            Invoice #
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            12/14/2021
+                                        </td>
+                                        <td>
+                                            122003
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_7">
+                <tbody>
+                    <tr>
+                        <td style="width:47%;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Bill To </th>
+                                        <th>Account #</th>
+                                        <th>T010448</th>
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="3" class="height">
+                                            <p>Bullet Line</p>
+                                            <p>6301 E 10th ave., Suite 110</p>
+                                            <p>Hialeah, FL 33013</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td style="width:6%;">
+
+                        </td>
+                        <td style="width:47%;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Ship To
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="height">
+                                            <p>Sharmlock</p>
+                                            <p>Kathryn Hough</p>
+                                            <p>153 Cartwright farm Ln</p>
+                                            <p>ste 202</p>
+                                            <p>Collierville tn 38017</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_8">
+                <tbody>
+                    <tr>
+                        <td>P.O. Number</td>
+                        <td>TTX Job #</td>
+                        <td>Terms</td>
+                        <td>Due Date </td>
+                        <td>Ship Date </td>
+                        <td>Ship Via </td>
+                    </tr>
+                    <tr>
+                        <td>M000027565/35412167-1</td>
+                        <td>268468</td>
+                        <td>NET 30</td>
+                        <td>1/13/2022</td>
+                        <td>1/13/2022</td>
+                        <td>UPS NXT DAY AIR</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_8 table_9">
+                <thead>
+                    <tr>
+                        <th>Quantity</th>
+                        <th>
+                            Item Code</th>
+                        <th>
+                            Description</th>
+                        <th>
+                            Unit Price</th>
+                        <th>
+                            Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td> 031-BULLET</td>
+                        <td>PLATE/PREP CHARGE
+                        </td>
+                        <td class="right">36.00
+                        </td>
+                        <td class="right">72.00
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table_2 table_10">
+                <tbody>
+                    <tr>
+                        <td style="width: 50%; text-align: center;" rowspan="3">
+                            *268468*
+                        </td>
+                        <td style="width: 50%;" class="total">
+                            <p>
+                            <span class="h4">Total</span> <span class="right">$807.00</span></p>
+                           
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="total">
+                            <p>
+                                <span  class="h4">Payments/Credits</span> <span class="right">$0.00</span></p>
+                               
+                        </td>
+                    </tr>
+                    <tr>
+                            <td  class="total"> <p>
+                                <span  class="h4">Balance Due-US Dollars</span> <span class="right">$807.00</span></p></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</apex:page>
