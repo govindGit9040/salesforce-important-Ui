@@ -1,0 +1,15 @@
+ 
+ 
+ 
+ @import url(//db.onlinewebfonts.com/c/a59a10fc173a405262ecba082980066e?family=Aktiv+Grotesk);
+@font-face {font-family: "Aktiv Grotesk";
+    src: url("http://db.onlinewebfonts.com/t/a59a10fc173a405262ecba082980066e.eot"); /* IE9*/
+    src: url("http://db.onlinewebfonts.com/t/a59a10fc173a405262ecba082980066e.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("http://db.onlinewebfonts.com/t/a59a10fc173a405262ecba082980066e.woff2") format("woff2"), /* chrome firefox */
+    url("http://db.onlinewebfonts.com/t/a59a10fc173a405262ecba082980066e.woff") format("woff"), /* chrome firefox */
+    url("http://db.onlinewebfonts.com/t/a59a10fc173a405262ecba082980066e.ttf") format("truetype"), /* chrome firefox opera Safari, Android, iOS 4.2+*/
+    url("http://db.onlinewebfonts.com/t/a59a10fc173a405262ecba082980066e.svg#Aktiv Grotesk") format("svg"); /* iOS 4.1- */
+}
+
+
+background: url(/s/sfsites/c/file-asset/newsbgjpg?v=1);
