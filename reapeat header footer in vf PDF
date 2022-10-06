@@ -1,0 +1,29 @@
+
+            @page {
+                margin-top: 150px;
+                padding: 0px;
+                margin-bottom: 90px;
+                @top-left {
+                    content: element(header);
+                }
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            
+            div.header {
+                margin-top: 10px;
+                position: running(header);
+                width: 100%;
+                margin-right: 10px;
+            }
+            
+            div.footer {
+                position: running(footer);
+                width: 100%;
+                margin-right: 10px;
+            }
+            
+            .repeatTableHeader {
+                -fs-table-paginate: paginate;
+            }
