@@ -1,0 +1,524 @@
+<apex:page title="Workorder PDF" controller="downloadWorkOrderPDF" renderAs="pdf" applyHtmlTag="false" showHeader="false" cache="true" readOnly="true">
+
+    <head>
+        <title>Workorder PDF</title>
+        <style>
+            @page {
+                margin: 0.3in 0.3in 0.4in;
+                /* PDF width, height, margin */
+            }
+            
+            @page {
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            
+            body {
+                font-size: 14px;
+                max-width: 900px;
+                font-family: Arial, sans-serif;
+            }
+            
+            div.header {
+                padding: 10px;
+                display: inline-block;
+                width: 100%;
+                position: running(header);
+                font-size: 11px;
+            }
+            
+            div.footer {
+                display: block;
+                padding: 5px;
+                position: running(footer);
+            }
+            
+            .pagenumber:before {
+                content: counter(page);
+            }
+            
+            .pagecount:before {
+                content: counter(pages);
+            }
+            
+            .footer_w_pageno {
+                width: 100%;
+            }
+            
+            .page_no {
+                text-align: center;
+            }
+            
+            .content_header {
+                display: inline-block;
+                width: 100%;
+            }
+            
+            .order_date {
+                width: 33.33%;
+                float: left;
+            }
+            
+            .work_order {
+                width: 33.33%;
+                float: left;
+            }
+            
+            .tt_job {
+                width: 33.33%;
+                float: left;
+            }
+            
+            .order_date h2 {
+                font-size: 19px;
+                margin: 0;
+                display: block;
+                text-align: left;
+            }
+            
+            .work_order h2 {
+                font-size: 19px;
+                display: block;
+                margin: 0;
+                text-align: center;
+            }
+            
+            .tt_job h2 {
+                font-size: 19px;
+                margin: 0;
+                display: block;
+                text-align: right;
+            }
+            
+            .Area_65_25 {
+                display: inline-block;
+                width: 100%;
+                margin-top: 20px;
+                margin-bottom: -3px;
+            }
+            
+            .area_65 {
+                width: 77%;
+                margin-right: 3%;
+                float: left;
+            }
+            
+            .area_25 {
+                width: 19.4%;
+                border: 1.5px solid gray;
+                float: left;
+            }
+            
+            .qr_img {
+                width: 100%;
+                height: 140px;
+            }
+            
+            .qr_img img {
+                height: 140px;
+            }
+            
+            .ord_date {
+                width: 100%;
+                border: 1px solid gray;
+                border-collapse: collapse;
+            }
+            
+            .ord_date tr,
+            .ord_date td {
+                border: 1px solid gray;
+            }
+            
+            .ord_date td {
+                padding: 5px 8px;
+                font-size: 12px;
+            }
+            
+            .ord_date .flex_td {
+                width: 100%;
+                display: inline-block;
+                line-height: 20px;
+            }
+            
+            .ord_date .flex_td .label {
+                width: 35%;
+                float: left;
+            }
+            
+            .ord_date .flex_td .value {
+                width: 60%;
+                word-break: break-all;
+                margin-left: 2%;
+                float: left;
+            }
+            
+            .ord_date .last_td {
+                border-bottom: 0;
+            }
+            
+            .trans_table {
+                margin-bottom: 0px;
+            }
+            
+            .trans_table .w_40 {
+                width: 269px;
+            }
+            
+            .ord_date .partial_ship {
+                border: 0;
+            }
+            
+            .partial_ship .part_txt p {
+                margin: 0;
+                line-height: 18px;
+            }
+            
+            .static_table tr td {
+                width: 50%;
+                font-size: 12px;
+                padding: 8px 10px;
+                text-align: center;
+            }
+            
+            .last_table tr td {
+                padding: 5px;
+                font-size: 12px;
+                line-height: 16px;
+                margin: 0;
+            }
+            
+            .header_th th {
+                margin: 0;
+                padding: 5px 10px;
+                text-align: center;
+                border: 1px solid gray;
+            }
+            
+            .last_table {
+                margin: 0;
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            .last_table tr {
+                margin: 0;
+                border: 0px solid gray;
+            }
+            
+            .last_table td {
+                margin: 0;
+                border-left: 1px solid gray;
+                border-right: 1px solid gray;
+            }
+            /* .last_table th {
+                border: 1px solid gray;
+            } */
+            
+            .last_table td {
+                padding: 5px 8px;
+            }
+            
+            table.table_area {
+                -fs-table-paginate: paginate;
+            }
+            
+            table.table_area {
+                width: 100%;
+                border-collapse: collapse;
+                border: none;
+                border-bottom: 1px solid gray;
+            }
+            
+            table.table_area tr {
+                border: none;
+            }
+            
+            td.table__txt {
+                padding: 8px 12px;
+                word-wrap: break-word;
+                color: #000;
+                border-collapse: collapse;
+                border: 0;
+                font-size: 14px;
+                border-left: 0.5px solid #ddd;
+                border-right: 0.5px solid #ddd;
+            }
+            
+            .thead_txt {
+                word-break: break-all;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="header">
+        </div>
+        <div class="footer">
+            <table class="footer_w_pageno">
+                <tr>
+
+                    <td>
+                        <div class="page_no"><span class="pagenumber" />/<span class="pagecount" /></div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="content_header">
+            <div class="order_date">
+                <h2> Order Date :
+                    <span class="header_date_time">  <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!objOrder.CreatedDate}" /> 
+                                                </apex:outputText>
+                                                <apex:param value="{!NOW()}" />
+                                            </span>
+                </h2>
+            </div>
+            <div class="work_order">
+                <h2>WORK ORDER</h2>
+            </div>
+            <div class="tt_job">
+                <h2>TT JOB # {!objWorkOrder.WorkOrderNumber}</h2>
+            </div>
+        </div>
+        <div class="Area_65_25">
+            <div class="area_65">
+                <table class="ord_date">
+                    <tr>
+                        <td style="word-break:break-all; overflow:hidden;">
+                            <div class="flex_td">
+                                <div class="label">
+                                    Customer PO #:
+                                </div>
+                                <div class="value">
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex_td">
+                                <div class="label">
+                                    Order Ship Date:
+                                </div>
+                                <!--  <div class="value">
+                                        {!objOrder.Order_ship_date__c}
+                                    </div>  -->
+                                <div class="value">
+                                    <div class="date_Area">
+                                        <span class="header_date_time">  <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!objOrder.Order_ship_date__c}" /> 
+                                                </apex:outputText>
+                                                <apex:param value="{!NOW()}" />
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="flex_td">
+                                <div class="label">
+                                    PPS Ship Date:
+                                </div>
+                                <!-- <div class="value">
+                                        {!objOrder.PPS_Ship_Date__c}
+                                    </div> -->
+                                <div class="value">
+                                    <div class="date_Area">
+                                        <span class="header_date_time">  <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!objOrder.PPS_Ship_Date__c}" /> 
+                                                </apex:outputText>
+                                                <apex:param value="{!NOW()}" />
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex_td">
+                                <div class="label">
+                                    In-Hands Date:
+                                </div>
+                                <!-- <div class="value">
+                                        {!objOrder.In_Hands_Date__c}
+                                    </div>  -->
+                                <div class="value">
+                                    <div class="date_Area">
+                                        <span class="header_date_time">  <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!objOrder.In_Hands_Date__c}" /> 
+                                                </apex:outputText>
+                                                <apex:param value="{!NOW()}" />
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="flex_td">
+                                <div class="label">
+                                    Artwork by:
+                                </div>
+                                <div class="value">
+
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex_td">
+                                <div class="label">
+                                    Art Approval Date:
+                                </div>
+                                <!-- <div class="value">
+                                        {!objOrder.Art_Approval_Date__c}
+                                    </div>  -->
+                                <div class="value">
+                                    <div class="date_Area">
+                                        <span class="header_date_time">  <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                                <apex:param value="{!objOrder.Art_Approval_Date__c}" /> 
+                                                </apex:outputText>
+                                                <apex:param value="{!NOW()}" />
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="last_td">
+                            <div class="flex_td">
+                                <div class="label">
+                                    Paper Printed by:
+                                </div>
+                                <div class="value">
+
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex_td">
+                                <div class="label">
+                                    Total Qty Ordered:
+                                </div>
+                                <div class="value">
+                                    {!orderTotalQuantity}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="area_25">
+                <table class="qr">
+                    <tr>
+                        <td>
+                            <div class="qr_img">
+                                <apex:image url="{!QR_Code_Image_URL}" styleClass="imageStyle" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+        <table class="ord_date trans_table">
+            <tr>
+                <td class="w_40">
+                    <div class="flex_td">
+                        <div class="label">
+                            Transferred by:
+                        </div>
+                        <div class="value">
+
+                        </div>
+                    </div>
+                </td>
+                <td class="partial_ship">
+                    <div class="part_txt">
+                        <p style="margin-bottom: 5px;">Partial Shipments: </p>
+                        <p>Qty to Shipping: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date: </p>
+                        <p style="padding-bottom: 5px;">Qty to Shipping: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date: </p>
+
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table class="ord_date static_table">
+            <tr>
+                <td style="font-size:13px;">
+                    Customer
+                </td>
+                <td style="font-size:13px;">
+                    Ship To
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {!objOrder.Account.Name} <br />{!objOrder.Account.BillingStreet} <br /> {!objOrder.Account.BillingCity}<br /> {!objOrder.Account.BillingState}<br /> {!objOrder.Account.BillingPostalCode}<br /> {!objOrder.Account.BillingCountry}.
+                </td>
+                <td>
+                    {!objOrder.Account.Name} <br />{!objOrder.Account.ShippingStreet} <br />{!objOrder.Account.ShippingCity}<br />{!objOrder.Account.ShippingState}<br /> {!objOrder.Account.ShippingPostalCode}<br /> {!objOrder.Account.ShippingCountry}.
+                </td>
+            </tr>
+        </table>
+        <table class="table_area last_table" style="border-collapse: collapse; table-layout:fixed;" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr class="header_th table_header">
+                    <th style="width: 15%;">
+                        Dept.
+                    </th>
+                    <th style="width: 10%;">
+                        Qty.
+                    </th>
+                    <th style="width: 25%;">
+                        Item (Static)
+                    </th>
+                    <th style="width: 30%;">
+                        Description
+                    </th>
+                    <th style="width: 20%;">
+                        In-Hands
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!woLineItemProducts}" var="item" id="theRepeat">
+                    <tr>
+                        <td class="thead_txt">
+                            <apex:outputPanel rendered="{!woLineItemProducts[item].Department != ''}">
+                                {!woLineItemProducts[item].Department}
+                            </apex:outputPanel>
+                        </td>
+                        <td class="thead_txt">
+                            <apex:outputPanel rendered="{!woLineItemProducts[item].Quantity != ''}">
+                                {!woLineItemProducts[item].Quantity}
+                            </apex:outputPanel>
+                        </td>
+                        <td class="thead_txt">
+                            <apex:outputPanel rendered="{!woLineItemProducts[item].Subject != ''}">
+                                {!woLineItemProducts[item].Subject}
+                            </apex:outputPanel>
+                        </td>
+                        <td class="thead_txt">
+                            <apex:outputPanel rendered="{!woLineItemProducts[item].Description != ''}">
+                                {!woLineItemProducts[item].Description}
+                            </apex:outputPanel>
+                        </td>
+                        <td class="thead_txt">
+                            <apex:outputPanel rendered="{!woLineItemProducts[item].Description != ''}">
+                                {!woLineItemProducts[item].InHandsDate}
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+    </body>
+</apex:page>
