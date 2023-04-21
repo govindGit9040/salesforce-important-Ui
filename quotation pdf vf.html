@@ -1,0 +1,238 @@
+<apex:page showHeader="false" sidebar="false" renderAs="pdf" standardStylesheets="false" lightningStylesheets="false" controller="SaveQuotation" applyBodyTag="false">
+
+    <head>
+        <apex:stylesheet value="{!$Resource.InvoicePdf}" />
+        <style>
+            @page {
+                margin: 0.25in;
+                margin-top: 70px;
+                padding: 10px 0;
+                margin-bottom: 90px;
+                @top-left {
+                    content: element(header);
+                }
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            
+            .header {
+                position: running(header);
+                padding: 30px 10px 10px;
+                font-family: sans-serif;
+                width: 96%;
+            }
+            
+            .header .logo {
+                width: 100px;
+                position: absolute;
+                left: 0;
+                top: 30px;
+            }
+            
+            .heading1 {
+                font-size: 18px;
+                text-align: center;
+                text-decoration: none;
+                border: 0;
+            }
+            
+            .content {
+                font-family: sans-serif;
+            }
+            
+            .flex_area {
+                display: inline-block;
+                margin-top: 30px;
+                width: 100%;
+            }
+            
+            .left_flex {
+                width: 42%;
+                float: left;
+                padding-right: 3%;
+            }
+            
+            .right_flex {
+                width: 55%;
+                float: right;
+            }
+            
+            .clear_both {
+                clear: both;
+            }
+            
+            .right_flex h3 {
+                margin: 0;
+                margin-bottom: 10px;
+            }
+            
+            .right_flex ol,
+            .right_flex ol li {
+                padding-left: 0;
+                margin-left: 0;
+            }
+            
+            .right_flex ol {
+                margin-left: 20px;
+            }
+            
+            .right_flex ol li {
+                margin-bottom: 10px;
+                line-height: 15px;
+            }
+            
+            .main_table,
+            .main_table tbody tr td,
+            .main_table thead tr th {
+                border: 0.5px solid;
+            }
+            
+            .main_table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            .main_table thead tr .wd_10 {
+                padding: 5px;
+                text-align: center;
+                width: 10%;
+                font-size: 10px;
+            }
+            
+            .main_table thead tr .wd_8 {
+                padding: 5px;
+                text-align: center;
+                width: 8%;
+                font-size: 10px;
+            }
+            
+            .main_table tbody tr td {
+                text-align: center;
+                font-size: 10px;
+                padding: 5px;
+            }
+            
+            .table_flex,
+            .table_flex tr td,
+            .table_flex tr th {
+                border: 0;
+            }
+            
+            .table_flex tr td,
+            .table_flex tr th {
+                padding-bottom: 4px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="header">
+            <apex:image styleClass="logo" url="{!$Resource.TechilaLogo}" />
+            <div class="heading1" align="center">Quotation</div>
+        </div>
+        <div class="content">
+            <table class="main_table">
+                <thead>
+                    <tr>
+                        <th class="wd_8">WING</th>
+                        <th class="wd_8">FLAT NO</th>
+                        <th class="wd_8">TYPE</th>
+                        <th class="wd_8">AREA</th>
+                        <th class="wd_8">RATE</th>
+                        <th class="wd_8">INFRA</th>
+                        <th class="wd_10">AGRM COST</th>
+                        <th class="wd_10">STAMP DUTY 6%</th>
+                        <th class="wd_10">REG CHRGS 1%</th>
+                        <th class="wd_10">GST 12%</th>
+                        <th class="wd_10">LEAGAL</th>
+                        <th class="wd_10">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!unitList}" var="unit">
+                        <tr>
+                            <td>{!unit.Building__r.Name}</td>
+                            <td>{!unit.Name}</td>
+                            <td>{!unit.Type__c}</td>
+                            <td>{!unit.Square_feet__c}</td>
+                            <td>{!unit.Rate__c}</td>
+                            <td>{!unit.Infra__c}</td>
+                            <td>{!unit.Agrm_Cost__c}</td>
+                            <td>{!unit.Stamp_Duty_Amount__c}</td>
+                            <td>{!unit.Reg_Charges_Amount__c}</td>
+                            <td>{!unit.GST_Amount__c}</td>
+                            <td>{!unit.Legal__c}</td>
+                            <td>{!unit.Total__c}</td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+
+            <div class="flex_area">
+                <table class="left_flex table_flex">
+                    <tr>
+                        <td>On Booking</td>
+                        <td>10%</td>
+                    </tr>
+                    <tr>
+                        <td>On Aggreement less booking amount</td>
+                        <td>10%</td>
+                    </tr>
+                    <tr>
+                        <td>On Plinth</td>
+                        <td>15%</td>
+                    </tr>
+                    <tr>
+                        <td>On 1st Slab of Flat</td>
+                        <td>10%</td>
+                    </tr>
+                    <tr>
+                        <td>On 2nd Slab of Flat</td>
+                        <td>10%</td>
+                    </tr>
+                    <tr>
+                        <td>On 3rd Slab of Flat</td>
+                        <td>10%</td>
+                    </tr>
+                    <tr>
+                        <td>On 4th Slab of Flat</td>
+                        <td>10%</td>
+                    </tr>
+                    <tr>
+                        <td>On 5th Slab of Flat</td>
+                        <td>10%</td>
+                    </tr>
+                    <tr>
+                        <td>After brick work of subject flat</td>
+                        <td>8%</td>
+                    </tr>
+                    <tr>
+                        <td>After Flooring Of Subject Flat</td>
+                        <td>5%</td>
+                    </tr>
+                    <tr>
+                        <td>At The Time Of Possession</td>
+                        <td>2%</td>
+                    </tr>
+                </table>
+                <div class="right_flex">
+                    <h3>
+                        SCHEDULE OF PAYMENT
+                    </h3>
+                    <div>
+                        Note:-
+                    </div>
+                    <ol>
+                        <li>This offer is valid for a specific period of time and the rate is subject to change without prior notice.</li>
+                        <li>Stampduty, Registration, VAT, Service Tax, LBT,GST, to be paid by the purchaser as per prevailling rates.</li>
+                        <li>Maintenance charges @ Rs. 3/Sq.ft/Month for 1 year to be paid at the time of possession.</li>
+                        <li>Agreement should be done within 1 Month of booking date.</li>
+                        <li>Loan offer letter required before agreement.</li>
+                    </ol>
+                </div>
+                <div class="clear_both"></div>
+            </div>
+        </div>
+    </body>
+</apex:page>
