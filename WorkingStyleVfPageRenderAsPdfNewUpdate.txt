@@ -1,0 +1,311 @@
+<apex:page showHeader="false" sidebar="false" renderAs="pdf" standardController="Contract"
+    extensions="AgreementPdfController" applyBodyTag="false" applyHtmlTag = "false">
+
+    
+     <head>
+      <style type="text/css" media="print">
+            .headerLogo img{
+                   float:right;
+                   height:100px;
+                   width:auto;
+            }
+            .clearArea{
+            clear:both;
+            }
+            
+          .footer_Sign{
+            display:inline-block;
+            width: 100%;
+          }
+          .left_sign,
+          .right_sign{
+            float: left;
+            width: 35%;
+          }
+          .right_sign{
+            margin-left: 29%;
+          }
+          .left_sign p span,
+          .right_sign p span{
+            display: block;
+            text-align: center;
+          }
+          .pb_70{
+            padding-bottom: 70px;
+          }
+          .border_top{
+            padding-top: 10px;
+            width: 100%;
+            border-top: 1px solid #000;
+            margin:0 auto;
+            text-align: center;
+            display: table;
+          }
+          p{
+            
+            line-height: 18px;
+          }
+          .t_Center{
+            text-align: center;
+          }
+            
+             .ol_list {
+                counter-reset: item;
+                padding-bottom: 30px;
+                padding-left: 0;
+                margin-left: 0;
+            }
+
+            .ol_list li {
+                display: block;
+                padding-bottom: 10px;
+                position: relative;
+                margin-left: 0;
+                padding-left: 20px;
+            }
+            .ol_list li .ol_list li{
+                padding-left: 35px;
+            }
+            .ol_list li .ol_list li .ol_list li{
+                padding-left: 48px;
+            }
+            .ol_list li .ol_list {
+                padding-top: 10px;
+            }
+
+            .ol_list li:before {
+                content: counters(item, ".") " ";
+                counter-increment: item;
+                padding-left: 0;
+                position: absolute;
+                margin-left: 0;
+                left: 0;
+            }
+            
+            .headingOfSfa{
+            font-family:'Times New Roman'; font-weight:400";
+            }
+            
+            .headingSfaMarginTop{
+            margin-top:0px;
+            }
+            .sfaLiTag{
+               font-family:'Times New Roman'; margin-bottom:5px; font-weight:400;
+            }
+            .sfaANNEXURE_A_Table{
+            border:0.75pt solid #bfbfbf; border-collapse: collapse;  border-color:lightgrey;
+            }
+            .sfaANNEXURETrTag{
+             background-color:rgb(240, 248, 255);border:0.75pt solid #bfbfbf;  border-color:lightgrey;
+            }
+            .Sfa_ANNEXURE_A_Th{
+             text-align:center;
+            }
+            .Sfa_Annexture_Th1_width{
+           
+             border:0.75pt solid #bfbfbf; border-collapse: collapse;  border-color:lightgrey; width:10%;
+            }
+            .Sfa_Annexture_Th2_width{
+             width:45%;
+            }
+            
+             .Sfa_Annexture_Th3_width{
+            width:45%;
+            }
+            
+            td{
+            border:0.75pt solid #bfbfbf; border-collapse: collapse;
+            }
+            
+            table{
+            border:0.75pt solid #bfbfbf; border-collapse: collapse;
+            }
+            
+            th{
+              border:0.75pt solid #bfbfbf; border-collapse: collapse;
+            }
+            .SFA_Part_c_Table{
+            width:475.4pt; border:0.75pt solid #bfbfbf; border-collapse:collapse; width:100%;
+            }
+            .SFA_Part_c_tr1{
+            height:31.7pt;
+            }
+              .SFA_Part_c_tr1{
+            height:31.7pt;
+            }
+            .SFA_Part_c_tr4{
+            height:15pt;
+            }
+            .SFA_Part_c_tr3{
+            height:18.9pt;
+            }
+            .SFA_Part_c_tr5{
+            height:38.7pt;
+            }
+            .SFA_Part_c_td1{
+           
+            width:187.65pt; border:0.75pt solid #bfbfbf; border-left:0.75pt solid #bfbfbf; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;
+             }
+            .Part_C_SFA{
+            margin-top:0pt; margin-bottom:0pt; line-height:115%; widows:0; orphans:0; font-size:11pt;
+            }
+            .detail_scope_p{
+            margin-top:0pt; margin-bottom:0pt; text-align:center; line-height:normal;
+            }
+            .detail_scope_tr_heigh_1{
+            height:10.25pt;
+            }
+            .detail_scope_p1{
+            margin-top:0pt; margin-bottom:0pt; line-height:normal;
+            }
+            .detail_scope_td1{
+            width:75.75pt; border:0.75pt solid #bfbfbf;  padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle; background-color:#e0e0e0;
+            }
+            .detail_scope_td2{
+          width:145.1pt; border:0.75pt solid #bfbfbf;   padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle; background-color:#e0e0e0;
+            }
+            .detail_scope_td3{
+            width:270.9pt; border:0.75pt solid #bfbfbf;  padding-right:5.03pt; padding-left:5.03pt; vertical-align:middle; background-color:#e0e0e0;
+            }
+            
+            .detail_scope_td4{
+            width:75.75pt; border:0.75pt solid #bfbfbf; border-right:0.75pt solid #bfbfbf;  padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;
+            }
+            
+            .detail_scope_td5{
+            width:145.1pt; border:0.75pt solid #bfbfbf; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;
+            }
+             .detail_scope_td6{
+            width:270.9pt; border:0.75pt solid #bfbfbf;   padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;
+            }
+            .detail_scope_td7{
+            width:75.75pt; border:0.75pt solid #bfbfbf;  padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;
+            }
+            .detail_scope_td8{
+            width:145.1pt; border:0.75pt solid #bfbfbf; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;
+            }
+             .detail_scope_td9{
+            width:270.9pt; border:0.75pt solid #bfbfbf;  padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;
+            }
+             .detail_scope_td10{
+            width:75.75pt; border:0.75pt solid #bfbfbf; padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;"
+            }
+             .detail_scope_td11{
+            width:145.1pt; border:0.75pt solid #bfbfbf;  padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;
+            }
+            
+            .detail_scope_td12{
+           width:270.9pt; border:0.75pt solid #bfbfbf;  padding-right:5.03pt; padding-left:5.03pt; vertical-align:top;
+            }
+            
+           
+            .detail_scope_p1Td1{
+            margin-top:0pt; margin-bottom:0pt; text-align:center; line-height:115%; widows:0; orphans:0; font-size:11pt;
+            }
+            .detail_scope_p2Td1{
+            margin-top:0pt; margin-right:8.75pt; margin-bottom:0pt; text-align:center; line-height:115%; widows:0; orphans:0; font-size:11pt;
+            }
+            .detail_scope_li1{
+            margin-left:12.5pt; padding-left:23.5pt; font-family:'Times New Roman'; font-size:10pt;
+            }
+            .detail_scope_li3{
+            margin-left:31.25pt; text-align:justify; page-break-after:avoid; padding-left:4.75pt; font-family:'Times New Roman'; font-size:11pt; font-weight:bold;
+            }
+            .detail_scope_li2{
+            margin-left:31.25pt; padding-left:4.75pt; font-family:'Times New Roman'; font-size:11pt; font-weight:bold;
+            }
+            .detail_scope_p1{
+            margin-top:0pt; margin-bottom:0pt; text-align:justify; page-break-after:avoid; line-height:115%; widows:0; orphans:0; font-size:11pt;
+            }
+            .MSA_ORM_p1{
+            margin-top:0pt; margin-bottom:0pt; text-align:justify;
+            }
+            .msa_orm_line_height{
+            line-height:normal !important;
+            }
+            .MSA_ORM_Font_Family{
+            font-family:'Times New Roman';
+            }
+            .MSA_ORM_p2{
+            margin-top:0pt; margin-bottom:0pt;
+            }
+            .Service_level_comments{
+             border-top:0.75pt solid #cccccc; border-right:0.75pt solid #cccccc; border-left:0.75pt solid #cccccc; border-bottom-style:solid; border-bottom-width:1.5pt; padding-right:1.88pt; padding-left:1.88pt; vertical-align:bottom;
+            }
+            .Service_level_comments_td1{
+            border-top-style:solid; border-top-width:1.5pt; border-right-style:solid; border-right-width:0.75pt; border-left:0.75pt solid #cccccc; border-bottom-style:solid; border-bottom-width:1.5pt; padding-right:1.88pt; padding-left:1.88pt; vertical-align:middle; background-color:#cfe2f3;
+            }
+            .Service_level_comments_td2{
+            margin-top:0pt; margin-bottom:0pt; text-align:center; font-size:11pt;
+            }
+            .service_level_comments_td4{
+            border-top:0.75pt solid #cccccc; border-right-style:solid; border-right-width:0.75pt; border-left:0.75pt solid #cccccc; border-bottom-style:solid;
+ 
+            border-bottom-width:0.75pt;padding-right:1.88pt; padding-left:1.88pt; vertical-align:middle;
+            }
+            .Service_level_comments_p1{
+            margin-top:0pt; margin-bottom:0pt; font-size:11pt;
+            }
+            .Service_level_comments_td5{
+            border:0.75pt solid #cccccc; padding-right:1.88pt; padding-left:1.88pt; vertical-align:bottom;
+            }
+            .Service_level_comments_td6{
+            border:0.75pt solid #cccccc; padding-right:1.88pt; padding-left:1.88pt; vertical-align:middle;
+            }
+            .service_level_comments_td7{
+             border-top:0.75pt solid #cccccc; border-right-style:solid; border-right-width:1.5pt; border-left:0.75pt solid #cccccc; border-bottom-style:solid; border-bottom-width:1.5pt; padding-right:1.5pt; padding-left:1.88pt; vertical-align:middle; background-color:#ead1dc;
+            }
+             .service_level_comments_td8{
+border-top:0.75pt solid #cccccc; border-right-style:solid; border-right-width:0.75pt; border-left-style:solid; border-left-width:0.75pt; border-bottom-style:solid; border-bottom-width:0.75pt; padding-right:1.88pt; padding-left:1.88pt; vertical-align:middle;            
+            
+            }
+            
+           .service_level_comments_td9{
+            border-top:0.75pt solid #cccccc; border-right:0.75pt solid #cccccc; border-left:0.75pt solid #cccccc; border-bottom-style:solid; border-bottom-width:0.75pt; padding-right:1.88pt; padding-left:1.88pt; vertical-align:bottom;
+            }
+            
+         .service_level_comments_td10{
+            border-top:0.75pt solid #cccccc; border-right:0.75pt solid #cccccc; border-left-style:solid; border-left-width:1.5pt; border-bottom-style:solid; border-bottom-width:1.5pt; padding-right:1.88pt; padding-left:1.5pt; vertical-align:middle;
+            }   
+            
+            .service_level_comments_td11{
+            border-top:0.75pt solid #cccccc; border-right:0.75pt solid #cccccc; border-left:0.75pt solid #cccccc; border-bottom-style:solid; border-bottom-width:0.75pt; padding-right:1.88pt; padding-left:1.88pt; vertical-align:bottom;
+            }
+            
+        </style>
+        
+    </head>
+
+     <body>
+        <apex:outputPanel id="htmlBlock">
+            <apex:outputPanel rendered="{!contractList.Aggreemnt_Type__c == 'NDA'}">
+                
+                
+                   <apex:include pageName="NDA_Pdf" />
+
+            </apex:outputPanel>
+
+            <apex:outputPanel rendered="{!contractList.Aggreemnt_Type__c == 'SFA'}">
+
+                <apex:include pageName="SFA_PDF_Page" />
+
+            </apex:outputPanel>
+
+
+            <apex:outputPanel rendered="{!contractList.Aggreemnt_Type__c == 'MSA + ORM'}">
+                <apex:include pageName="MAS_ORM_Pdf" />
+
+            </apex:outputPanel>
+
+
+            <apex:outputPanel rendered="{!contractList.Aggreemnt_Type__c == 'MSA'}">
+                <apex:include pageName="MSA_2_Pdf" />
+
+            </apex:outputPanel>
+
+
+
+        </apex:outputPanel>
+    </body>  
+  
+</apex:page>
