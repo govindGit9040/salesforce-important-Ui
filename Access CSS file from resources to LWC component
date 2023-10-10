@@ -1,0 +1,12 @@
+import newstylePath from '@salesforce/resourceUrl/stylenew';
+import {loadStyle} from 'lightning/platformResourceLoader';
+// 
+export default class OverrideDliLwc extends NavigationMixin(LightningElement) {
+//    
+    stylePath = newstylePath;
+    constructor(){
+        super();
+        Promise.all([
+            loadStyle(this, `${this.stylePath}/stylenew.css`)
+        ])
+    }
