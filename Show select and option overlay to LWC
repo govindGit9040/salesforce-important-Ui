@@ -1,0 +1,28 @@
+<td class="slds-cell-edit" role="gridcell">
+    <div class="slds-form-element__control slds-combobox_container slds-combobox">
+        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+            <select data-field-api-name="repairOrigin" data-index={index}
+                data-type="notFound" required onchange={handleChangeOnNotFound}
+                name="repairOrigin" class="slds-input slds-combobox__input" data-name="selectRepairOriginFound"
+                style="appearance: none;height: 32px;margin-top: 3px;">
+                <option class="slds-text-color_weak slds-p-vertical_x-small" value="">
+                    -- None --
+                </option>
+                <template for:each={repairOriginOptions} for:item="option">
+                    <option class="slds-text-color_weak slds-p-vertical_x-small" key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                </template>
+            </select>
+            <span class="slds-icon_container slds-input__icon slds-input__icon_right">
+                <lightning-icon icon-name="utility:down" size="x-small"></lightning-icon>
+            </span>
+        </div>
+    </div>
+    <!-- <lightning-combobox data-index={index}
+        data-field-api-name="repairOrigin" variant="label-hidden"
+        data-type="notFound" label="Repair Origin" placeholder="--Select--"
+        options={repairOriginOptions} value={row.repairOrigin} required
+        onchange={handleChangeOnNotFound}>
+    </lightning-combobox> -->
+</td>
