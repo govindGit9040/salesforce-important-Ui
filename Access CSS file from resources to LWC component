@@ -10,3 +10,10 @@ export default class OverrideDliLwc extends NavigationMixin(LightningElement) {
             loadStyle(this, `${this.stylePath}/stylenew.css`)
         ])
     }
+
+
+
+
+
+//////////
+create stylenew.css file with style code and right click and create zip and upload and save in static resources as stylenew name
