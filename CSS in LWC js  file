@@ -1,0 +1,25 @@
+import { LightningElement } from 'lwc';
+ 
+export default class MyComponent extends LightningElement {
+    connectedCallback() {
+        // Create a style element
+        const styleElement = document.createElement('style');
+ 
+        // Define your custom CSS rules
+        const customCss = `
+            .slds-modal {
+                /* Your custom modal styles */
+            }
+            /* Add more custom CSS rules as needed */
+        `;
+ 
+        // Set the CSS rules as text content of the style element
+        styleElement.textContent = customCss;
+ 
+        // Append the style element to the document head
+        document.head.appendChild(styleElement);
+    }
+}
+
+ 
+ 
